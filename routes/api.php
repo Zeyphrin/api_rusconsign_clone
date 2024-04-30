@@ -40,3 +40,4 @@ Route::put('mitra/{id}/accept', [AuthadminController::class, 'acceptMitra']);
 Route::delete('mitra/{id}/reject', [AuthadminController::class, 'rejectMitra']);
 Route::post('registeradmin',[AuthadminController::class,'registeradmin']);
 Route::post('loginadmin',[AuthadminController::class,'loginadmin']);
+
