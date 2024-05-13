@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\MitraResource;
 use App\Models\Admin;
 use App\Models\Mitra;
 use Illuminate\Http\Request;
@@ -69,33 +70,36 @@ class AuthadminController extends Controller
 //    }
 
 
-    public function acceptMitra($id)
+    public function accept(Request $request, $id)
     {
         $mitra = Mitra::find($id);
-
         if (!$mitra) {
-            return response()->json(['message' => 'Mitra tidak ditemukan'], 404);
+            return response()->json(['message' => 'Mitra not found'], 404);
         }
 
-        // Lakukan tindakan yang sesuai untuk menerima mitra (contoh: ubah status mitra menjadi diterima)
+        // Change status to "accepted"
         $mitra->status = 'accepted';
-        $mitra->save();
-
-        return response()->json(['message' => 'Mitra berhasil diterima']);
+        if ($mitra->save()) {
+            return new MitraResource($mitra);
+        } else {
+            return response()->json(['message' => 'Failed to accept mitra'], 500);
+        }
     }
 
-    public function rejectMitra($id)
+    public function reject(Request $request, $id)
     {
         $mitra = Mitra::find($id);
-
         if (!$mitra) {
-            return response()->json(['message' => 'Mitra tidak ditemukan'], 404);
+            return response()->json(['message' => 'Mitra not found'], 404);
         }
 
-        // Lakukan tindakan yang sesuai untuk menolak mitra (contoh: hapus mitra dari basis data)
-        $mitra->delete();
-
-        return response()->json(['message' => 'Mitra berhasil ditolak']);
+        // Change status to "rejected"
+        $mitra->status = 'rejected';
+        if ($mitra->save()) {
+            return new MitraResource($mitra);
+        } else {
+            return response()->json(['message' => 'Failed to reject mitra'], 500);
+        }
     }
 
 }

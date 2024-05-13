@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('mitras', function (Blueprint $table) {
             $table->id();
-            $table->foreignId("user_id");
+            $table->foreignId("user_id")->default(0);
             $table->string("nama_lengkap");
             $table->integer("nis");
             $table->string("no_dompet_digital");

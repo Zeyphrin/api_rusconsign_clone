@@ -23,7 +23,11 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'pengikut'
+        'pengikut',
+        'jumlah_jasa',
+        'jumlah_product',
+        'penilaian'
+
     ];
 
     /**
@@ -48,6 +52,12 @@ class User extends Authenticatable
             'password' => 'hashed'
         ];
     }
+    protected $primaryKey = 'user_id';
+    public function mitra()
+    {
+        return $this->hasOne(Mitra::class);
+    }
+
 
 
 

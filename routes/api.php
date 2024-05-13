@@ -38,8 +38,8 @@ Route::get("index",[AuthController::class,"index"]);
 
  // Routes for AuthmitraController
  Route::post('registermitra', [AuthmitraController::class, 'registermitra']);
- Route::put('acceptmitra/{mitraId}', [AuthmitraController::class, 'accept']);
- Route::delete('rejectmitra/{mitraId}', [AuthmitraController::class, 'reject']);
+ Route::put('accept/{id}', [AuthmitraController::class, 'accept']);
+ Route::delete('reject/{id}', [AuthmitraController::class, 'reject']);
  Route::get('/mitra',[AuthmitraController::class, 'index']);
 
 
@@ -51,8 +51,10 @@ Route::delete('mitra/{id}/reject', [AuthadminController::class, 'rejectMitra']);
 Route::post('registeradmin',[AuthadminController::class,'registeradmin']);
 Route::post('loginadmin',[AuthadminController::class,'loginadmin']);
 
-Route::post('/product', [ProductController::class, 'store']);
-Route::get('/product', [ProductController::class, 'index']);
+Route::group(['prefix' => 'product'], function () {
+    Route::post('/store', [ProductController::class, 'store']);
+    Route::get('/', [ProductController::class, 'index']);
+});
 
 
 

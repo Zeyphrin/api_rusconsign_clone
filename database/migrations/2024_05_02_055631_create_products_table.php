@@ -17,7 +17,7 @@ return new class extends Migration
             $table->text('desc_product');
             $table->decimal('price_product', 10, 2);
             $table->float('rating_product');
-            $table->foreignId('mitraId');
+            $table->foreignId('mitraId')->constrained('mitras');
             $table->string('image');
             $table->timestamps();
         });

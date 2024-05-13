@@ -44,42 +44,35 @@ class AuthController extends Controller
     }
     public function login(Request $request)
     {
-        //validation
+        // Validasi input
         $request->validate([
-            "email"=>"required|email|string",
-            "password"=>"required"
+            "email" => "required|email|string",
+            "password" => "required"
         ]);
 
-        $user = User::where("email", $request->email)->first();
+        // Cari user berdasarkan email
+        $user = User::where('email', $request->email)->first();
 
-        if(!empty($user)){
-            if(Hash::check($request->password, $user->password)){
-                $token = $user->createToken("mytoken")->plainTextToken;
-
-                return response()->json([
-                    "status"=> true,
-                    "massage"=>"User logged in",
-                    "token" => $token,
-                    "data"=>[]
-                ]);
-
-            }else{
-                return response()->json([
-                    "status"=> false,
-                    "massage"=> "Invalid password",
-                    "data"=> []
-                ]);
-            }
-
-        }else{
+        // Periksa apakah pengguna ada dan passwordnya cocok
+        if (!$user || !Hash::check($request->password, $user->password)) {
             return response()->json([
-                "status"=> false,
-                "massage"=> "Email doesn't match with records",
-                "data"=> []
-            ]);
+                "status" => false,
+                "message" => "These credentials do not match our records.",
+                "data" => []
+            ], 404);
         }
-    }
 
+        // Jika pengguna ada dan password cocok, buat token akses personal
+        $token = $user->createToken('my-app-token')->plainTextToken;
+
+        // Kirim respons sukses bersama dengan token
+        return response()->json([
+            "status" => true,
+            "message" => "User logged in",
+            "token" => $token,
+            "data" => []
+        ]);
+    }
     public function profile(Request $request)
     {
         $userData = auth()->user();
