@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
 use Validator;
 use Illuminate\Support\Facades\Hash;
 
@@ -40,7 +42,6 @@ class AuthController extends Controller
       ]);
 
     }
-
     public function login(Request $request)
     {
         //validation
@@ -79,14 +80,17 @@ class AuthController extends Controller
         }
     }
 
-    public function profile(Request $request){
+    public function profile(Request $request)
+    {
         $userData = auth()->user();
+        $isMitra = $userData->status == 'mitra';
 
         return response()->json([
-             "status"=> true,
-             "massage"=> "Profile Information",
-             "data"=> $userData,
-             "id" => auth()->user()->id
+            "status" => true,
+            "message" => "Profile Information",
+            "data" => $userData,
+            "is_mitra" => $isMitra,
+            "id" => auth()->user()->id
         ]);
     }
 
@@ -98,6 +102,13 @@ class AuthController extends Controller
             "status" => true,
             "massage" =>"User logged out",
             "data"=>[]
+        ]);
+    }
+
+    public function datauser()
+    {
+        return view('/user', [
+            "title" => "user",
         ]);
     }
 }

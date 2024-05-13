@@ -30,44 +30,44 @@ class AuthadminController extends Controller
           ]);
     }
 
-    public function loginadmin(Request $request)
-    {
-          //validation
-          $request->validate([
-            "email"=>"required|email|string",
-            "password"=>"required"
-        ]);
+//    public function loginadmin(Request $request)
+//    {
+//          //validation
+//          $request->validate([
+//            "email"=>"required|email|string",
+//            "password"=>"required"
+//        ]);
+//
+//        $user = Admin::where("email", $request->email)->first();
+//
+//        if(!empty($user)){
+//            if(Hash::check($request->password, $user->password)){
+//                $token = $user->createToken("mytoken")->plainTextToken;
+//
+//                return response()->json([
+//                    "status"=> true,
+//                    "massage"=>"User logged in",
+//                    "token" => $token,
+//                    "data"=>[]
+//                ]);
+//
+//            }else{
+//                return response()->json([
+//                    "status"=> false,
+//                    "massage"=> "Invalid password",
+//                    "data"=> []
+//                ]);
+//            }
+//
+//        }else{
+//            return response()->json([
+//                "status"=> false,
+//                "massage"=> "Email doesn't match with records",
+//                "data"=> []
+//            ]);
+//        }
+//    }
 
-        $user = Admin::where("email", $request->email)->first();
-
-        if(!empty($user)){
-            if(Hash::check($request->password, $user->password)){
-                $token = $user->createToken("mytoken")->plainTextToken;
-
-                return response()->json([
-                    "status"=> true,
-                    "massage"=>"User logged in",
-                    "token" => $token,
-                    "data"=>[]
-                ]);
-
-            }else{
-                return response()->json([
-                    "status"=> false,
-                    "massage"=> "Invalid password",
-                    "data"=> []
-                ]);
-            }
-
-        }else{
-            return response()->json([
-                "status"=> false,
-                "massage"=> "Email doesn't match with records",
-                "data"=> []
-            ]);
-        }
-    }
-    
 
     public function acceptMitra($id)
     {
@@ -97,5 +97,6 @@ class AuthadminController extends Controller
 
         return response()->json(['message' => 'Mitra berhasil ditolak']);
     }
+
 }
 

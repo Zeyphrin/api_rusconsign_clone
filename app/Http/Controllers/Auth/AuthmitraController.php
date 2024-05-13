@@ -3,71 +3,82 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\MitraResource;
 use App\Models\Mitra;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Storage;
 
 class AuthmitraController extends Controller
 {
     public function index()
     {
-        // Method index() - tambahkan logika jika diperlukan
+        $mitras = Mitra::all();
+        return MitraResource::collection($mitras);
     }
 
-    public function registermitra(Request $request)
+    public function show($id)
     {
-        $request->validate([
-            "nama_lengkap" => "required|string",
-            "nis" => "required|integer",
-            "no_dompet_digital" => "required|string",
-            "image_id_card" => "required|string",
-            "status" => "string"
-        ]);
+        $mitra = Mitra::find($id);
+        if (!$mitra) {
+            return response()->json(['message' => 'Mitra not found'], 404);
+        }
+        return new MitraResource($mitra);
+    }
 
+    public function store(Request $request)
+    {
         $mitra = new Mitra();
-        $mitra->nama_lengkap = $request->nama_lengkap;
-        $mitra->nis = $request->nis;
-        $mitra->no_dompet_digital = $request->no_dompet_digital;
-        $mitra->image_id_card = $request->image_id_card;
-        $mitra->status = $request->status ?? 'pending';
 
         if ($mitra->save()) {
-            return response()->json(['message' => 'Mitra berhasil didaftarkan'], 201);
+            // Setelah berhasil menyimpan mitra, temukan pengguna terkait
+            $user = User::where('email', $request->email)->first();
+
+            // Jika pengguna ditemukan, ubah statusnya menjadi "mitra"
+            if ($user) {
+                $user->status_mitra = 'mitra';
+                $user->save();
+            }
+
+            return new MitraResource($mitra);
         } else {
-            return response()->json(['message' => 'Gagal mendaftarkan mitra'], 500);
+            return response()->json(['message' => 'Failed to register mitra'], 500);
         }
     }
 
-    public function accept($id)
+    public function update(Request $request, $id)
     {
         $mitra = Mitra::find($id);
-
         if (!$mitra) {
-            return response()->json(['message' => 'Mitra tidak ditemukan'], 404);
+            return response()->json(['message' => 'Mitra not found'], 404);
         }
+        if ($mitra->save()) {
+            $user = User::where('email', $request->email)->first();
 
-        // Lakukan tindakan yang sesuai untuk menerima mitra (contoh: ubah status mitra menjadi diterima)
-        $mitra->status = 'accepted';
-        $mitra->save();
+            // Jika pengguna ditemukan, ubah statusnya menjadi "mitra"
+            if ($user) {
+                $user->status_mitra = 'mitra';
+                $user->save();
+            }
 
-        return response()->json(['message' => 'Mitra berhasil diterima']);
+            return new MitraResource($mitra);
+        } else {
+            return response()->json(['message' => 'Failed to update mitra'], 500);
+        }
     }
 
-    public function reject($id)
+    public function destroy($id)
     {
         $mitra = Mitra::find($id);
-
         if (!$mitra) {
-            return response()->json(['message' => 'Mitra tidak ditemukan'], 404);
+            return response()->json(['message' => 'Mitra not found'], 404);
         }
 
-        // Lakukan tindakan yang sesuai untuk menolak mitra (contoh: hapus mitra dari basis data)
-        $mitra->delete();
-
-        return response()->json(['message' => 'Mitra berhasil ditolak']);
-    }
-
-    public function profilemitra()
-    {
-        // Method profilemitra() - tambahkan logika jika diperlukan
+        if ($mitra->delete()) {
+            return response()->json(['message' => 'Mitra deleted successfully'], 200);
+        } else {
+            return response()->json(['message' => 'Failed to delete mitra'], 500);
+        }
     }
 }
