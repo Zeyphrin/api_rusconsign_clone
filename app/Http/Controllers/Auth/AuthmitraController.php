@@ -26,42 +26,46 @@ class AuthmitraController extends Controller
         return new MitraResource($mitra);
     }
 
-    public function registermitra(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            "nama_lengkap" => "required|string",
-            "nis" => "required|integer|unique:mitras",
-            "no_dompet_digital" => "required|string",
-            "image_id_card" => "required|image",
-            "status" => "string"
-        ]);
+        public function registermitra(Request $request)
+        {
+            $validator = Validator::make($request->all(), [
+                "image_profile" => "required|image",
+                "nama_lengkap" => "required|string",
+                "nama_toko" => "required|string",
+                "nis" => "required|integer|unique:mitras",
+                "no_dompet_digital" => "required|string",
+                "image_id_card" => "required|image",
+                "status" => "string"
+            ]);
 
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
+            if ($validator->fails()) {
+                return response()->json(['errors' => $validator->errors()], 422);
+            }
+
+            // Handle image upload
+            if ($request->hasFile('image_id_card')) {
+                $image = $request->file('image_id_card');
+                $imagePath = $image->store('mitra_images');
+                $imageIdCardPath = Storage::url($imagePath);
+            } else {
+                return response()->json(['message' => 'Image id card is required'], 422);
+            }
+
+            $mitra = new Mitra();
+            $mitra->image_profile = $imageIdCardPath;
+            $mitra->nama_lengkap = $request->nama_lengkap;
+            $mitra->nama_toko = $request->nama_toko;
+            $mitra->nis = $request->nis;
+            $mitra->no_dompet_digital = $request->no_dompet_digital;
+            $mitra->image_id_card = $imageIdCardPath;
+            $mitra->status = $request->status ?? 'pending';
+
+            if ($mitra->save()) {
+                return new MitraResource($mitra);
+            } else {
+                return response()->json(['message' => 'Failed to register mitra'], 500);
+            }
         }
-
-        // Handle image upload
-        if ($request->hasFile('image_id_card')) {
-            $image = $request->file('image_id_card');
-            $imagePath = $image->store('mitra_images');
-            $imageIdCardPath = Storage::url($imagePath);
-        } else {
-            return response()->json(['message' => 'Image id card is required'], 422);
-        }
-
-        $mitra = new Mitra();
-        $mitra->nama_lengkap = $request->nama_lengkap;
-        $mitra->nis = $request->nis;
-        $mitra->no_dompet_digital = $request->no_dompet_digital;
-        $mitra->image_id_card = $imageIdCardPath;
-        $mitra->status = $request->status ?? 'pending';
-
-        if ($mitra->save()) {
-            return new MitraResource($mitra);
-        } else {
-            return response()->json(['message' => 'Failed to register mitra'], 500);
-        }
-    }
 
 
     public function update(Request $request, $id)
