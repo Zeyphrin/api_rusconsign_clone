@@ -14,7 +14,9 @@
             Schema::create('mitras', function (Blueprint $table) {
                 $table->id();
                 $table->foreignId("user_id")->default(0);
+                $table->string("image_profile");
                 $table->string("nama_lengkap");
+                $table->string("nama_toko");
                 $table->integer("nis");
                 $table->string("no_dompet_digital");
                 $table->string("image_id_card");
