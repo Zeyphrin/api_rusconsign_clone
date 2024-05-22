@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Mitra;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -9,55 +10,45 @@ use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
+
     public function create()
     {
 
     }
 
-    public function store(Request $request)
+    public function addProduct(Request $request)
     {
-        // Check if the user is authenticated
-        $user = Auth::user();
-        if (!$user) {
-            return response()->json(['message' => 'Unauthorized'], 401);
-        }
-
-        // Check if the user is associated with a partner
-        if (!$user->mitra) {
-            return response()->json(['message' => 'User is not associated with a mitra'], 422);
-        }
-
-        // Validate input data
+        // Validasi data yang diterima dari request
         $validatedData = $request->validate([
             'name_product' => 'required|string',
             'desc_product' => 'required|string',
             'price_product' => 'required|numeric',
             'rating_product' => 'required|numeric',
             'image' => 'required|image',
+            'mitra_id' => 'required|exists:mitras,id',
         ]);
 
-        // Handle image upload
-        if ($request->hasFile('image')) {
-            $image = $request->file('image');
-            $imagePath = $image->store('product_images');
-        } else {
-            return response()->json(['message' => 'Image is required'], 422);
-        }
+        // Simpan produk ke dalam database
+        $product = new Product();
+        $product->name_product = $validatedData['name_product'];
+        $product->desc_product = $validatedData['desc_product'];
+        $product->price_product = $validatedData['price_product'];
+        $product->rating_product = $validatedData['rating_product'];
 
-        $product = Product::create([
-            'name_product' => $validatedData['name_product'],
-            'desc_product' => $validatedData['desc_product'],
-            'price_product' => $validatedData['price_product'],
-            'rating_product' => $validatedData['rating_product'],
-            'mitra_id' => $user->mitra->id,
-            'image' => $imagePath // Store the image path instead of URL
-        ]);
+        // Mengelola unggah dan penyimpanan gambar
+        $imagePath = $request->file('image')->store('public/images');
+        $product->image = basename($imagePath);
+        $product->mitra_id = $validatedData['mitra_id'];
+        $product->save();
 
-        if ($product) {
-            return response()->json(['message' => 'Product created successfully'], 201);
-        } else {
-            return response()->json(['message' => 'Failed to create product'], 500);
-        }
+        // Mencari data mitra berdasarkan mitra_id
+        $mitra = Mitra::all();
+
+        // Menampilkan nilai $mitra untuk pemeriksaan
+        dd($mitra);
+
+        // Mengembalikan respons JSON yang menunjukkan keberhasilan
+        return response()->json(['message' => 'Produk berhasil ditambahkan', 'product' => $product], 201);
     }
 
     public function update(Request $request, $id)
@@ -72,7 +63,7 @@ class ProductController extends Controller
             'desc_product' => 'required|string',
             'price_product' => 'required|numeric',
             'rating_product' => 'required|numeric',
-            'image' => 'image' // Remove 'mitraId' from the validation rules
+            'image' => 'image'
         ]);
 
         if ($request->hasFile('image')) {

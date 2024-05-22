@@ -15,6 +15,16 @@ class Product extends Model
      * @var array
      */
     protected $fillable = [
-        'name_product', 'desc_product', 'price_product', 'rating_product', 'profile', 'image', 'mitra_id'
+        'name_product', 'desc_product', 'price_product', 'rating_product', 'image', 'mitra_id',
     ];
+
+    /**
+     * Get the mitra that owns the product.
+     */
+    public function mitra()
+    {
+        return $this->belongsTo(Mitra::class, 'mitra_id');
+    }
+
+
 }

@@ -148,5 +148,41 @@ class AuthmitraController extends Controller
         }
     }
 
+    public function tambahpengikut($id)
+    {
+        $mitra = Mitra::find($id);
+        if (!$mitra) {
+            return response()->json(['message' => 'Mitra not found'], 404);
+        }
+
+        $mitra->pengikut += 1;
+        if ($mitra->save()) {
+            return new MitraResource($mitra);
+        } else {
+            return response()->json(['message' => 'Failed to add pengikut'], 500);
+        }
+    }
+
+    public function tambahproduct(Request $request, $mitraId)
+    {
+        $mitra = Mitra::find($mitraId);
+        if (!$mitra) {
+            return response()->json(['message' => 'Mitra not found'], 404);
+        }
+
+        $mitra->jumlah_product += 1;
+        if ($mitra->save()) {
+            return new MitraResource($mitra);
+        } else {
+            return response()->json(['message' => 'Failed to add product'], 500);
+        }
+    }
+
+    public function tambahjasa()
+    {
+
+    }
+
+
 
 }

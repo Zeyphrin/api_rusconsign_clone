@@ -17,10 +17,6 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->integer("pengikut")->nullable();
-            $table->integer("jumlah_jasa")->default(0);
-            $table->integer("jumlah_product")->default(0);
-            $table->float("penilaian")->default(0);
             $table->rememberToken();
             $table->timestamps();
         });
@@ -33,7 +29,7 @@ return new class extends Migration
 
         Schema::create('sessions', function (Blueprint $table) {
             $table->string('id')->primary();
-            $table->foreignId('user_id')->index();
+            $table->foreignId('user_id')->nullable()->index();
             $table->string('ip_address', 45)->nullable();
             $table->text('user_agent')->nullable();
             $table->longText('payload');

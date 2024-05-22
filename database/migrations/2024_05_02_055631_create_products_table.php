@@ -12,14 +12,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('products', function (Blueprint $table) {
-            $table->id("productId");
-            $table->string('name_product');
-            $table->text('desc_product');
-            $table->decimal('price_product', 10, 2);
-            $table->float('rating_product');
-            $table->foreignId('mitraId')->constrained('mitras');
-            $table->string('image');
-            $table->timestamps();
+            $table->id('productId'); // Primary key with a custom name
+            $table->string('name_product'); // Consistent naming with controller
+            $table->text('desc_product'); // Consistent naming with controller
+            $table->decimal('price_product', 10, 2); // Consistent naming with controller
+            $table->float('rating_product'); // Consistent naming with controller
+            $table->foreignId('mitra_id')->constrained('mitras')->onDelete('cascade'); // Ensure consistency and add cascade delete
+            $table->string('image'); // Consistent naming with controller
+            $table->timestamps(); // Add created_at and updated_at timestamps
         });
     }
 

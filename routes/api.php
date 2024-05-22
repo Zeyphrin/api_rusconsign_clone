@@ -17,15 +17,15 @@ use Illuminate\Support\Facades\Route;
 // });
 
 Route::post('register', [AuthController::class, 'register']);
-Route::post('/login', [AuthController::class, 'login']);
+Route::post('register', [AuthController::class, 'register']);
 
 Route::group([
     "middleware" => ["auth:sanctum"]
 ], function(){
-
     Route::get("profile",[AuthController::class,"profile"]);
     Route::get("logout",[AuthController::class,"logout"]);
     Route::post('tambahpengikut', [ProfileController::class, 'tambahpengikut']);
+    Route::get('/test',[ProductController::class,'test']);
 }
 );
 
@@ -50,6 +50,10 @@ Route::put('mitra/{id}/accept', [AuthadminController::class, 'acceptMitra']);
 Route::delete('mitra/{id}/reject', [AuthadminController::class, 'rejectMitra']);
 Route::post('registeradmin',[AuthadminController::class,'registeradmin']);
 Route::post('loginadmin',[AuthadminController::class,'loginadmin']);
+Route::post('/mitras/{id}/tambahpengikut', [AuthmitraController::class, 'tambahpengikut']);
+Route::post('/mitras/{id}/tambahproduct', [AuthmitraController::class, 'tambahproduct']);
+
+Route::post('add-product', [ProductController::class, 'addProduct']);
 
 Route::group(['prefix' => 'product'], function () {
     Route::post('/store', [ProductController::class, 'store']);

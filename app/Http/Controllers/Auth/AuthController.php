@@ -44,33 +44,35 @@ class AuthController extends Controller
     }
     public function login(Request $request)
     {
-        // Validasi input
+        // Validate input
         $request->validate([
-            "email" => "required|email|string",
-            "password" => "required"
+            'email' => 'required|email|string',
+            'password' => 'required|string|min:6'
         ]);
 
-        // Cari user berdasarkan email
+        // Find user by email
         $user = User::where('email', $request->email)->first();
 
-        // Periksa apakah pengguna ada dan passwordnya cocok
+        // Check if user exists and password matches
         if (!$user || !Hash::check($request->password, $user->password)) {
             return response()->json([
-                "status" => false,
-                "message" => "These credentials do not match our records.",
-                "data" => []
-            ], 404);
+                'status' => false,
+                'message' => 'These credentials do not match our records.',
+                'data' => []
+            ], 401);
         }
 
-        // Jika pengguna ada dan password cocok, buat token akses personal
+        // Create a personal access token
         $token = $user->createToken('my-app-token')->plainTextToken;
 
-        // Kirim respons sukses bersama dengan token
+        // Send success response with token
         return response()->json([
-            "status" => true,
-            "message" => "User logged in",
-            "token" => $token,
-            "data" => []
+            'status' => true,
+            'message' => 'User logged in',
+            'token' => $token,
+            'data' => [
+                'user' => $user
+            ]
         ]);
     }
     public function profile(Request $request)
