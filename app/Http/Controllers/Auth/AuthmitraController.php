@@ -29,7 +29,7 @@ class AuthmitraController extends Controller
         public function registermitra(Request $request)
         {
             $validator = Validator::make($request->all(), [
-                "image_profile" => "required|image",
+                "image_profile" => "image",
                 "nama_lengkap" => "required|string",
                 "nama_toko" => "required|string",
                 "nis" => "required|integer|unique:mitras",
