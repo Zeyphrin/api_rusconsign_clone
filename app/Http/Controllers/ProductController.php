@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\ProductResource;
 use App\Models\Mitra;
 use App\Models\Product;
 use Illuminate\Http\Request;
@@ -11,9 +12,10 @@ use Illuminate\Support\Facades\Storage;
 class ProductController extends Controller
 {
 
-    public function create()
+    public function index()
     {
-
+        $product = Product::all();
+        return ProductResource::collection($product);
     }
 
     public function addProduct(Request $request)
@@ -42,7 +44,9 @@ class ProductController extends Controller
         $product->save();
 
         // Mencari data mitra berdasarkan mitra_id
-        $mitra = Mitra::all();
+        $mitra = Mitra::find($validatedData['mitra_id']);
+        $mitra->jumlah_product += 1;
+        $mitra->save();
 
         // Menampilkan nilai $mitra untuk pemeriksaan
         dd($mitra);

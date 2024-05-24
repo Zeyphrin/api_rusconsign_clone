@@ -54,6 +54,7 @@ Route::post('/mitras/{id}/tambahpengikut', [AuthmitraController::class, 'tambahp
 Route::post('/mitras/{id}/tambahproduct', [AuthmitraController::class, 'tambahproduct']);
 
 Route::post('add-product', [ProductController::class, 'addProduct']);
+Route::get('/product',[ProductController::class, 'index']);
 
 Route::group(['prefix' => 'product'], function () {
     Route::post('/store', [ProductController::class, 'store']);
