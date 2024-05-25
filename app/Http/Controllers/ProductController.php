@@ -30,6 +30,14 @@ class ProductController extends Controller
             'mitra_id' => 'required|exists:mitras,id',
         ]);
 
+        // Mencari data mitra berdasarkan mitra_id
+        $mitra = Mitra::find($validatedData['mitra_id']);
+
+        // Memeriksa status mitra
+        if ($mitra->status !== 'accepted') {
+            return response()->json(['message' => 'Mitra not accepted'], 403);
+        }
+
         // Simpan produk ke dalam database
         $product = new Product();
         $product->name_product = $validatedData['name_product'];
@@ -43,17 +51,14 @@ class ProductController extends Controller
         $product->mitra_id = $validatedData['mitra_id'];
         $product->save();
 
-        // Mencari data mitra berdasarkan mitra_id
-        $mitra = Mitra::find($validatedData['mitra_id']);
+        // Menambah jumlah_product pada mitra
         $mitra->jumlah_product += 1;
         $mitra->save();
-
-        // Menampilkan nilai $mitra untuk pemeriksaan
-        dd($mitra);
 
         // Mengembalikan respons JSON yang menunjukkan keberhasilan
         return response()->json(['message' => 'Produk berhasil ditambahkan', 'product' => $product], 201);
     }
+
 
     public function update(Request $request, $id)
     {

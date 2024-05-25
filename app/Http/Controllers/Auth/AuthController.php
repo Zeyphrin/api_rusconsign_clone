@@ -15,8 +15,8 @@ class AuthController extends Controller
 
     public function index()
     {
-        $user = User::all();
-        return response()->json($user);
+        $users = User::all();
+        return response()->json($users);
     }
     public function register(Request $request)
     {
