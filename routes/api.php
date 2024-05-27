@@ -3,6 +3,8 @@
 use App\Http\Controllers\Auth\AuthadminController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\AuthmitraController;
+use App\Http\Controllers\Auth\ForgotPasswordController;
+use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\JasaController;
 use App\Http\Controllers\MitraController;
 use App\Http\Controllers\ProductController;
@@ -22,7 +24,9 @@ Route::get('/users', [AuthController::class, 'index']);
 Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'login']);
 Route::delete('/users/{id}', [AuthController::class, 'destroy']);
-Route::put('/users/{user_id}/edit-bio', [UserController::class, 'editBio']);
+Route::put('/users/{user_id}/edit-bio', [AuthController::class, 'editBio']);
+Route::post('forgot-password', [ForgotPasswordController::class, 'forgot']);
+Route::post('reset-password', [ResetPasswordController::class, 'reset']);
 
 Route::group([
     "middleware" => ["auth:sanctum"]
@@ -78,7 +82,7 @@ Route::get('storage/{path}', function ($path) {
 
 Route::post('add-product', [ProductController::class, 'addProduct']);
 Route::get('/product',[ProductController::class, 'index']);
-Route::put('/products/{id}', [ProductController::class, 'update']);
+Route::put('/edit-products/{id}', [ProductController::class, 'update']);
 Route::delete('/products/{id}', [ProductController::class, 'destroy']);
 
 Route::post('/add-jasa', [JasaController::class, 'addJasa']);

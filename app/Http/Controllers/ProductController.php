@@ -51,13 +51,12 @@ class ProductController extends Controller
         $product->mitra_id = $validatedData['mitra_id'];
         $product->save();
 
-        // Menambah jumlah_product pada mitra
-        $mitra->jumlah_product += 1;
+        $mitra->jumlah_product += 1; // Menginkremen jumlah produk
         $mitra->save();
 
-        // Mengembalikan respons JSON yang menunjukkan keberhasilan
-        return response()->json(['message' => 'Produk berhasil ditambahkan', 'product' => $product], 201);
-    }
+            // Mengembalikan respons JSON yang menunjukkan keberhasilan
+            return response()->json(['message' => 'Produk berhasil ditambahkan', 'product' => $product], 201);
+        }
 
 
     public function update(Request $request, $id)
