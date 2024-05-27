@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::create('transaksis', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('productId');
+
             $table->timestamps();
         });
     }

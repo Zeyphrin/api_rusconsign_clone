@@ -140,5 +140,31 @@ class AuthController extends Controller
             ], 500);
         }
     }
+    public function editBio(Request $request, $user_id)
+    {
+        // Find the user by user_id
+        $user = User::find($user_id);
+
+        // Check if the user exists
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+
+        // Validate the request data
+        $validatedData = $request->validate([
+            'bio_desc' => 'required|string',
+        ]);
+
+        // Update the bio_desc
+        $user->bio_desc = $validatedData['bio_desc'];
+
+        // Save the changes
+        if ($user->save()) {
+            return response()->json(['message' => 'Bio description updated successfully'], 200);
+        } else {
+            return response()->json(['message' => 'Failed to update bio description'], 500);
+        }
+    }
+
 
 }

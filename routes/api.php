@@ -22,6 +22,7 @@ Route::get('/users', [AuthController::class, 'index']);
 Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'login']);
 Route::delete('/users/{id}', [AuthController::class, 'destroy']);
+Route::put('/users/{user_id}/edit-bio', [UserController::class, 'editBio']);
 
 Route::group([
     "middleware" => ["auth:sanctum"]
@@ -77,6 +78,8 @@ Route::get('storage/{path}', function ($path) {
 
 Route::post('add-product', [ProductController::class, 'addProduct']);
 Route::get('/product',[ProductController::class, 'index']);
+Route::put('/products/{id}', [ProductController::class, 'update']);
+Route::delete('/products/{id}', [ProductController::class, 'destroy']);
 
 Route::post('/add-jasa', [JasaController::class, 'addJasa']);
 Route::get('/jasa',[JasaController::class, 'index']);

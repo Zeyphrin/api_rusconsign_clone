@@ -77,8 +77,8 @@ class ProductController extends Controller
 
         if ($request->hasFile('image')) {
             $image = $request->file('image');
-            $imagePath = $image->store('product_images');
-            $product->image = $imagePath;
+            $imagePath = $image->store('public/images');
+            $product->image = basename($imagePath);
         }
 
         // Update product attributes
@@ -94,6 +94,7 @@ class ProductController extends Controller
             return response()->json(['message' => 'Failed to update product'], 500);
         }
     }
+
     public function destroy($id)
     {
         // Find the product by ID
@@ -104,6 +105,9 @@ class ProductController extends Controller
 
         // Delete the product
         if ($product->delete()) {
+            // You might want to delete the associated image file here as well
+            // Storage::delete('public/images/' . $product->image);
+
             return response()->json(['message' => 'Product deleted successfully'], 200);
         } else {
             return response()->json(['message' => 'Failed to delete product'], 500);
