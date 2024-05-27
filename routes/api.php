@@ -58,22 +58,21 @@ Route::post('registeradmin',[AuthadminController::class,'registeradmin']);
 Route::post('loginadmin',[AuthadminController::class,'loginadmin']);
 Route::post('/mitras/{id}/tambahpengikut', [AuthmitraController::class, 'tambahpengikut']);
 Route::post('/mitras/{id}/tambahproduct', [AuthmitraController::class, 'tambahproduct']);
-Route::get('storage/{id}', function ($id) {
-    // Construct the file path
-    $path = 'mitra_images/' . $id; // Assuming the files are stored in the 'mitra_images' directory
+Route::get('storage/{path}', function ($path) {
+    $filePath = storage_path('app/public/' . $path);
 
-    // Check if the file exists
+    // Periksa apakah file ada
     if (!Storage::exists($path)) {
         abort(404);
     }
 
-    // Get the file content and MIME type
+    // Baca file dan dapatkan tipe konten
     $file = Storage::get($path);
     $type = Storage::mimeType($path);
 
-    // Return the file as response with correct MIME type
+    // Kembalikan respons dengan file dan tipe konten
     return response($file, 200)->header('Content-Type', $type);
-})->where('id', '[0-9]+');
+})->where('path', '.*');
 
 
 Route::post('add-product', [ProductController::class, 'addProduct']);

@@ -56,6 +56,10 @@ class AuthmitraController extends Controller
                 // Mengambil nama asli file
                 $imageName = $image->getClientOriginalName();
 
+
+                $mitraId = $request->input('mitra_id');
+                $imagePath = "mitra_images/{$mitraId}_{$imageName}";
+
                 // Menyimpan gambar dengan nama asli
                 $imagePath = $image->storeAs('mitra_images', $imageName);
 
