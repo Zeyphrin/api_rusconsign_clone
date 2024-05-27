@@ -58,20 +58,17 @@ Route::post('registeradmin',[AuthadminController::class,'registeradmin']);
 Route::post('loginadmin',[AuthadminController::class,'loginadmin']);
 Route::post('/mitras/{id}/tambahpengikut', [AuthmitraController::class, 'tambahpengikut']);
 Route::post('/mitras/{id}/tambahproduct', [AuthmitraController::class, 'tambahproduct']);
-Route::get('storage/{filename}', function ($filename) {
-    $path = storage_path('app/' . $filename);
+Route::get('storage/{id}', function ($id) {
+    $path = storage_path('app/' . $id);
 
-    if (!Storage::exists($filename)) {
+    // Check if the file exists
+    if (!Storage::exists($path)) {
         abort(404);
     }
-
-    $file = Storage::get($filename);
-    $type = Storage::mimeType($filename);
-
-    $response = response($file, 200)->header('Content-Type', $type);
-
-    return $response;
-})->where('filename', '.*');
+    $file = Storage::get($path);
+    $type = Storage::mimeType($path);
+    return response($file, 200)->header('Content-Type', $type);
+})->where('id', '[0-9]+');
 
 
 Route::post('add-product', [ProductController::class, 'addProduct']);
