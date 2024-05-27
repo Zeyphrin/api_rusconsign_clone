@@ -13,9 +13,18 @@ use Illuminate\Support\Facades\Hash;
 class AuthController extends Controller
 {
 
-    public function index()
+    public function index(Request $request)
     {
-        $users = User::all();
+        // Check if 'username' query parameter is present
+        if ($request->has('username')) {
+            // Filter users based on the 'username' query parameter
+            $username = $request->input('username');
+            $users = User::where('name', 'LIKE', "%$username%")->get();
+        } else {
+            // Get all users if 'username' query parameter is not present
+            $users = User::all();
+        }
+
         return response()->json($users);
     }
     public function register(Request $request)

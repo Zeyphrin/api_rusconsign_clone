@@ -11,9 +11,16 @@ use Illuminate\Support\Facades\Storage;
 
 class AuthmitraController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $mitras = Mitra::all();
+        $query = Mitra::query();
+
+        if ($request->has('nama_toko')) {
+            $query->where('nama_toko', 'like', '%' . $request->query('nama_toko') . '%');
+        }
+
+        $mitras = $query->get();
+
         return MitraResource::collection($mitras);
     }
 
