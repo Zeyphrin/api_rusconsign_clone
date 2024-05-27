@@ -59,14 +59,19 @@ Route::post('loginadmin',[AuthadminController::class,'loginadmin']);
 Route::post('/mitras/{id}/tambahpengikut', [AuthmitraController::class, 'tambahpengikut']);
 Route::post('/mitras/{id}/tambahproduct', [AuthmitraController::class, 'tambahproduct']);
 Route::get('storage/{id}', function ($id) {
-    $path = storage_path('app/' . $id);
+    // Construct the file path
+    $path = 'mitra_images/' . $id; // Assuming the files are stored in the 'mitra_images' directory
 
     // Check if the file exists
     if (!Storage::exists($path)) {
         abort(404);
     }
+
+    // Get the file content and MIME type
     $file = Storage::get($path);
     $type = Storage::mimeType($path);
+
+    // Return the file as response with correct MIME type
     return response($file, 200)->header('Content-Type', $type);
 })->where('id', '[0-9]+');
 
