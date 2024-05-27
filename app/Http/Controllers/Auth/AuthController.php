@@ -21,7 +21,6 @@ class AuthController extends Controller
             $username = $request->input('username');
             $users = User::where('name', 'LIKE', "%$username%")->get();
         } else {
-            // Get all users if 'username' query parameter is not present
             $users = User::all();
         }
 

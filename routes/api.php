@@ -9,6 +9,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
 
 // Route::middleware('auth:sanctum')->group(function () {
 //     Route::get('/user', function (Request $request) {
@@ -57,14 +58,27 @@ Route::post('registeradmin',[AuthadminController::class,'registeradmin']);
 Route::post('loginadmin',[AuthadminController::class,'loginadmin']);
 Route::post('/mitras/{id}/tambahpengikut', [AuthmitraController::class, 'tambahpengikut']);
 Route::post('/mitras/{id}/tambahproduct', [AuthmitraController::class, 'tambahproduct']);
+Route::get('storage/{filename}', function ($filename) {
+    $path = storage_path('app/' . $filename);
+
+    if (!Storage::exists($filename)) {
+        abort(404);
+    }
+
+    $file = Storage::get($filename);
+    $type = Storage::mimeType($filename);
+
+    $response = response($file, 200)->header('Content-Type', $type);
+
+    return $response;
+})->where('filename', '.*');
+
 
 Route::post('add-product', [ProductController::class, 'addProduct']);
 Route::get('/product',[ProductController::class, 'index']);
 
-Route::group(['prefix' => 'product'], function () {
-    Route::post('/store', [ProductController::class, 'store']);
-    Route::get('/', [ProductController::class, 'index']);
-});
+Route::post('/add-jasa', [JasaController::class, 'addJasa']);
+Route::get('/jasa',[JasaController::class, 'index']);
 
 
 

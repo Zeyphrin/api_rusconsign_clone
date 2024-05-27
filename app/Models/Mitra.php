@@ -24,6 +24,11 @@ class Mitra extends Model
     {
         return $this->hasMany(Product::class);
     }
+
+    public function Jasas()
+    {
+        return $this->hasMany(Jasa::class);
+    }
     protected $attributes = [
         'jumlah_product' => 0,
         'jumlah_jasa' => 0,
