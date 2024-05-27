@@ -16,7 +16,7 @@
                 $table->string("image_profile");
                 $table->string("nama_lengkap");
                 $table->string("nama_toko");
-                $table->integer("nis");
+                $table->integer("nis")->unique();
                 $table->string("no_dompet_digital");
                 $table->string("image_id_card");
                 $table->string("status");
