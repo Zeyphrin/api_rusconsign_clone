@@ -43,6 +43,8 @@ Route::get("index",[AuthController::class,"index"]);
  Route::put('accept/{id}', [AuthmitraController::class, 'accept']);
  Route::delete('reject/{id}', [AuthmitraController::class, 'reject']);
  Route::get('/mitra',[AuthmitraController::class, 'index']);
+Route::put('/mitras/{id}', [AuthmitraController::class, 'update']);
+Route::delete('/mitras/{id}', [AuthmitraController::class, 'destroy']);
 
 
 Route::get("index", [AuthController::class, "index"]);

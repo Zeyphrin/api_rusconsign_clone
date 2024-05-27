@@ -106,4 +106,31 @@ class AuthController extends Controller
             "title" => "user",
         ]);
     }
+    public function destroy(Request $request, $id)
+    {
+        $user = User::find($id);
+
+        if (!$user) {
+            return response()->json([
+                "status" => false,
+                "message" => "User not found",
+                "data" => []
+            ], 404);
+        }
+
+        if ($user->delete()) {
+            return response()->json([
+                "status" => true,
+                "message" => "User deleted successfully",
+                "data" => []
+            ]);
+        } else {
+            return response()->json([
+                "status" => false,
+                "message" => "Failed to delete user",
+                "data" => []
+            ], 500);
+        }
+    }
+
 }
