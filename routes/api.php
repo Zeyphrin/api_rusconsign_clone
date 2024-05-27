@@ -20,6 +20,7 @@ Route::get('/users', [AuthController::class, 'index']);
 
 Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'login']);
+Route::delete('/users/{id}', [AuthController::class, 'destroy']);
 
 Route::group([
     "middleware" => ["auth:sanctum"]
