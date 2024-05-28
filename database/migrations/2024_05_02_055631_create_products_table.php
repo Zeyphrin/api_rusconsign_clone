@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id('productId'); // Primary key with a custom name
             $table->string('name_product'); // Consistent naming with controller
             $table->text('desc_product'); // Consistent naming with controller
-            $table->decimal('price_product', 10, 2); // Consistent naming with controller
+            $table->integer('price_product'); // Consistent naming with controller
             $table->float('rating_product'); // Consistent naming with controller
             $table->foreignId('mitra_id')->constrained('mitras')->onDelete('cascade'); // Ensure consistency and add cascade delete
             $table->string('image'); // Consistent naming with controller

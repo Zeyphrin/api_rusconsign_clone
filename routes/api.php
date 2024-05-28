@@ -102,6 +102,8 @@ Route::delete('/products/{id}', [ProductController::class, 'destroy']);
 
 Route::post('/add-jasa', [JasaController::class, 'addJasa']);
 Route::get('/jasa',[JasaController::class, 'index']);
+Route::put('/jasas/{id}', [JasaController::class, 'update']);
+Route::delete('/jasas/{id}', [JasaController::class, 'destroy']);
 
 
 

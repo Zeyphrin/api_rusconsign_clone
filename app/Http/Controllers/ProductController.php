@@ -12,10 +12,17 @@ use Illuminate\Support\Facades\Storage;
 class ProductController extends Controller
 {
 
-    public function index()
+    public function index(Request $request)
     {
-        $product = Product::all();
-        return ProductResource::collection($product);
+        $query = Product::query();
+
+        if ($request->has('nama_product')) {
+            $query->where('nama_product', 'like', '%' . $request->input('nama_product') . '%');
+        }
+
+        $products = $query->get();
+
+        return ProductResource::collection($products);
     }
 
     public function addProduct(Request $request)
