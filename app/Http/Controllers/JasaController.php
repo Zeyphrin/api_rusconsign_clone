@@ -51,16 +51,13 @@ class JasaController extends Controller
         $jasa->image_jasa = $imageData;
         $jasa->save();
 
-        // Mencari data mitra berdasarkan mitra_id
         $mitra = Mitra::find($validatedData['mitra_id']);
 
         if ($mitra->status !== 'accepted') {
             return response()->json(['message' => 'Mitra not accepted'], 403);
         }
 
-        // Check if Jasa creation was successful
         if ($jasa) {
-            // Increment jumlah_jasa pada mitra
             $mitra->jumlah_jasa += 1;
             $mitra->save();
 

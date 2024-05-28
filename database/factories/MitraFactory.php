@@ -25,7 +25,7 @@ class MitraFactory extends Factory
             'nis' => $this->faker->unique()->numberBetween(100000, 999999), // Adjust the range as needed
             'no_dompet_digital' => $this->faker->phoneNumber,
             'image_id_card' => $this->faker->imageUrl(),
-            'status' => $this->faker->randomElement(['active', 'inactive']), // Example status values
+            'status' => $this->faker->randomElement(['accepted', 'pending']), // Example status values
             'pengikut' => $this->faker->optional()->numberBetween(0, 10000), // Optional field
             'jumlah_jasa' => $this->faker->numberBetween(0, 100), // Default to 0
             'jumlah_product' => $this->faker->numberBetween(0, 100), // Default to 0

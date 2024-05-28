@@ -7,6 +7,7 @@ use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\JasaController;
 use App\Http\Controllers\MitraController;
+use App\Http\Controllers\OTPController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Http\Request;
@@ -27,6 +28,8 @@ Route::delete('/users/{id}', [AuthController::class, 'destroy']);
 Route::put('/users/{user_id}/edit-bio', [AuthController::class, 'editBio']);
 Route::post('forgot-password', [ForgotPasswordController::class, 'forgot']);
 Route::post('reset-password', [ResetPasswordController::class, 'reset']);
+Route::post('send-otp', [OTPController::class, 'sendOTP']);
+Route::post('verify-otp', [OTPController::class, 'verifyOTP']);
 
 Route::group([
     "middleware" => ["auth:sanctum"]
