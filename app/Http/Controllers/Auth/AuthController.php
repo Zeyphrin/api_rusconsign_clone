@@ -15,9 +15,7 @@ class AuthController extends Controller
 
     public function index(Request $request)
     {
-        // Check if 'username' query parameter is present
         if ($request->has('username')) {
-            // Filter users based on the 'username' query parameter
             $username = $request->input('username');
             $users = User::where('name', 'LIKE', "%$username%")->get();
         } else {
