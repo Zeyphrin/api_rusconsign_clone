@@ -5,7 +5,9 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\AuthmitraController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\JasaController;
+use App\Http\Controllers\LikeController;
 use App\Http\Controllers\MitraController;
 use App\Http\Controllers\OTPController;
 use App\Http\Controllers\ProductController;
@@ -38,6 +40,16 @@ Route::group([
     Route::get("logout",[AuthController::class,"logout"]);
     Route::post('tambahpengikut', [ProfileController::class, 'tambahpengikut']);
     Route::get('/test',[ProductController::class,'test']);
+
+    Route::get('cart', [CartController::class, 'index']);
+    Route::post('add-cart', [CartController::class, 'store']);
+    Route::put('cart/{id}', [CartController::class, 'update']);
+    Route::delete('cart/{id}', [CartController::class, 'destroy']);
+
+    // Like routes
+    Route::get('likes', [LikeController::class, 'index']);
+    Route::post('add-likes', [LikeController::class, 'store']);
+    Route::delete('likes/{id}', [LikeController::class, 'destroy']);
 }
 );
 
