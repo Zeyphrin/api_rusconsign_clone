@@ -17,7 +17,7 @@ class AuthController extends Controller
     {
         if ($request->has('email')) {
             $email = $request->input('email');
-            $users = User::where('email', 'LIKE', "% $email%")->get();
+            $users = User::where('email', 'LIKE', "%{$email}%")->get();
         } else {
             $users = User::all();
         }
