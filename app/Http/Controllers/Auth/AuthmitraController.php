@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\MitraResource;
 use App\Models\Mitra;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
@@ -49,6 +50,11 @@ class AuthmitraController extends Controller
                 return response()->json(['errors' => $validator->errors()], 422);
             }
 
+            $user = User::where('email', $request->user()->email)->first();
+            if ($user->mitra) {
+                return response()->json(['message' => 'User is already registered as a mitra'], 422);
+            }
+
             // Handle image upload
             if ($request->hasFile('image_id_card')) {
                 $image = $request->file('image_id_card');
@@ -65,6 +71,7 @@ class AuthmitraController extends Controller
             }
 
             $mitra = new Mitra();
+            $mitra->user_id = $user->id;
             $mitra->image_profile = $imageIdCardPath;
             $mitra->nama_lengkap = $request->nama_lengkap;
             $mitra->nama_toko = $request->nama_toko;

@@ -15,9 +15,9 @@ class AuthController extends Controller
 
     public function index(Request $request)
     {
-        if ($request->has('username')) {
-            $username = $request->input('username');
-            $users = User::where('name', 'LIKE', "%$username%")->get();
+        if ($request->has('email')) {
+            $email = $request->input('email');
+            $users = User::where('email', 'LIKE', "% $email%")->get();
         } else {
             $users = User::all();
         }
