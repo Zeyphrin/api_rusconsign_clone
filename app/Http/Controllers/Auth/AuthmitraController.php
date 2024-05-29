@@ -53,17 +53,12 @@ class AuthmitraController extends Controller
             if ($request->hasFile('image_id_card')) {
                 $image = $request->file('image_id_card');
 
-                // Mengambil nama asli file
                 $imageName = $image->getClientOriginalName();
-
-
                 $mitraId = $request->input('mitra_id');
                 $imagePath = "mitra_images/{$mitraId}_{$imageName}";
 
-                // Menyimpan gambar dengan nama asli
-                $imagePath = $image->storeAs('mitra_images', $imageName);
+                $imagePath  = $image->storeAs('mitra_images', $imageName);
 
-                // Mendapatkan URL gambar
                 $imageIdCardPath = Storage::url($imagePath);
             } else {
                 return response()->json(['message' => 'Image id card is required'], 422);

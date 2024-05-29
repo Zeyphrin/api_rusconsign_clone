@@ -23,7 +23,9 @@
                 $table->integer("pengikut")->nullable();
                 $table->integer("jumlah_jasa")->default(0);
                 $table->integer("jumlah_product")->default(0);
-                $table->float("penilaian")->default(0);;
+                $table->float("penilaian")->default(0);
+                $table->unsignedBigInteger('user_id');
+                $table->foreign('user_id')->references('user_id')->on('users')->onDelete('cascade');
                 $table->rememberToken();
                 $table->timestamps();
             });
