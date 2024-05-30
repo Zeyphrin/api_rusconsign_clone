@@ -67,7 +67,6 @@ class AuthmitraController extends Controller
             }
 
             $mitra = new Mitra();
-            $mitra->user_id = $user->id;
             $mitra->image_profile = $imageIdCardPath;
             $mitra->nama_lengkap = $request->nama_lengkap;
             $mitra->nama_toko = $request->nama_toko;
