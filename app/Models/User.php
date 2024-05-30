@@ -53,6 +53,7 @@ class User extends Authenticatable
         ];
     }
     protected $primaryKey = 'user_id';
+
     public function mitra()
     {
         return $this->hasOne(Mitra::class);

@@ -36,6 +36,7 @@ Route::post('verify-otp', [OTPController::class, 'verifyOTP']);
 Route::group([
     "middleware" => ["auth:sanctum"]
 ], function(){
+    Route::post('registermitra', [AuthmitraController::class, 'registermitra']);
     Route::get("profile",[AuthController::class,"profile"]);
     Route::get("logout",[AuthController::class,"logout"]);
     Route::post('tambahpengikut', [ProfileController::class, 'tambahpengikut']);
@@ -61,7 +62,8 @@ Route::post('tambahproduct', [ProfileController::class, 'tambahproduct']);
 Route::get("index",[AuthController::class,"index"]);
 
  // Routes for AuthmitraController
- Route::post('registermitra', [AuthmitraController::class, 'registermitra']);
+
+
  Route::put('accept/{id}', [AuthmitraController::class, 'accept']);
  Route::delete('reject/{id}', [AuthmitraController::class, 'reject']);
  Route::get('/mitra',[AuthmitraController::class, 'index']);

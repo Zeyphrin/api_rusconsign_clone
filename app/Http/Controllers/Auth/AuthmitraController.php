@@ -50,10 +50,6 @@ class AuthmitraController extends Controller
                 return response()->json(['errors' => $validator->errors()], 422);
             }
 
-            $user = User::where('email', $request->user()->email)->first();
-            if ($user->mitra) {
-                return response()->json(['message' => 'User is already registered as a mitra'], 422);
-            }
 
             // Handle image upload
             if ($request->hasFile('image_id_card')) {
