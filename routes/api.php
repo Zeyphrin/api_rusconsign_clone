@@ -36,7 +36,7 @@ Route::post('verify-otp', [OTPController::class, 'verifyOTP']);
 Route::group([
     "middleware" => ["auth:sanctum"]
 ], function(){
-    Route::post('registermitra', [AuthmitraController::class, 'registermitra']);
+
     Route::get("profile",[AuthController::class,"profile"]);
     Route::get("logout",[AuthController::class,"logout"]);
     Route::post('tambahpengikut', [ProfileController::class, 'tambahpengikut']);
@@ -73,7 +73,7 @@ Route::delete('/mitras/{id}', [AuthmitraController::class, 'destroy']);
 
 Route::get("index", [AuthController::class, "index"]);
 
-
+Route::post('registermitra', [AuthmitraController::class, 'registermitra']);
 Route::put('mitra/{id}/accept', [AuthadminController::class, 'acceptMitra']);
 Route::delete('mitra/{id}/reject', [AuthadminController::class, 'rejectMitra']);
 Route::post('registeradmin',[AuthadminController::class,'registeradmin']);
