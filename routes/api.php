@@ -73,8 +73,8 @@ Route::delete('/mitras/{id}', [AuthmitraController::class, 'destroy']);
 
 Route::get("index", [AuthController::class, "index"]);
 
-Route::post('registermitra', [AuthmitraController::class, 'registermitra']);
-Route::put('mitra/{id}/accept', [AuthadminController::class, 'acceptMitra']);
+Route::post('/registermitra', [AuthmitraController::class, 'registermitra'])->middleware('auth:sanctum');
+Route::put('mitra/{id}/accept', [AuthadminController::class, 'acceptMitra'])->middleware('auth:sanctum');
 Route::delete('mitra/{id}/reject', [AuthadminController::class, 'rejectMitra']);
 Route::post('registeradmin',[AuthadminController::class,'registeradmin']);
 Route::post('loginadmin',[AuthadminController::class,'loginadmin']);

@@ -24,6 +24,7 @@ class MitraResource extends JsonResource
             'image' => $this->image_id_card,
             'status' => $this->status,
             'pengikut'=>$this->pengikut,
+            'email' => $this->email,
             'jumlahproduct'=>$this->jumlah_product,
             'jumlahjasa'=>$this->jumlah_jasa,
             'penilaian'=>$this->penilaian,
