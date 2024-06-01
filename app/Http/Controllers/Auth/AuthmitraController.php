@@ -28,13 +28,17 @@ class AuthmitraController extends Controller
 
     public function show($id)
     {
+        if (!Auth::check()) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+
         $mitra = Mitra::find($id);
         if (!$mitra) {
             return response()->json(['message' => 'Mitra not found'], 404);
         }
+
         return new MitraResource($mitra);
     }
-
     public function registermitra(Request $request)
     {
         $validator = Validator::make($request->all(), [

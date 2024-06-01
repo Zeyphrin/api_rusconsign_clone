@@ -12,38 +12,61 @@ use Symfony\Component\HttpKernel\Profiler\Profile;
 
 class ProfileController extends Controller
 {
+
+    public function profile()
+    {
+        $user = Auth::user();
+
+        // Muat data relasi profile
+        if ($user) {
+            $user->load('profile');
+
+            return response()->json([
+                "message" => "Data user berhasil didapatkan",
+                "data" => $user
+            ]);
+        }
+
+        return response()->json([
+            "message" => "User tidak terautentikasi",
+            "data" => null
+        ], 401);
+
+
+    }
+
     public function index()
     {
 
     }
 
-        public function dataprofile(Request $request, $user)
-        {
-            // Validate request parameters
-            $validatedData = $request->validate([
-                'user' => 'string',
-                'pengikut' => 'integer|nullable',
-                'jumlah_jasa' => 'integer|nullable',
-                'jumlah_product' => 'integer|nullable',
-                'penilaian' => 'numeric|min:0|max:5|nullable',
-            ]);
+    public function dataprofile(Request $request, $user)
+    {
+        // Validate request parameters
+        $validatedData = $request->validate([
+            'user' => 'string',
+            'pengikut' => 'integer|nullable',
+            'jumlah_jasa' => 'integer|nullable',
+            'jumlah_product' => 'integer|nullable',
+            'penilaian' => 'numeric|min:0|max:5|nullable',
+        ]);
 
-            try {
-                $user = User::where('name', $user)->firstOrFail();
-                $userData = [
-                    'name' => $user->name,
-                    'email' => $user->email,
-                    'pengikut' => $validatedData['pengikut'] ?? null,
-                    'jumlah_jasa' => $validatedData['jumlah_jasa'] ?? null,
-                    'jumlah_product' => $validatedData['jumlah_product'] ?? null,
-                    'penilaian' => $validatedData['penilaian'] ?? null,
-                ];
+        try {
+            $user = User::where('name', $user)->firstOrFail();
+            $userData = [
+                'name' => $user->name,
+                'email' => $user->email,
+                'pengikut' => $validatedData['pengikut'] ?? null,
+                'jumlah_jasa' => $validatedData['jumlah_jasa'] ?? null,
+                'jumlah_product' => $validatedData['jumlah_product'] ?? null,
+                'penilaian' => $validatedData['penilaian'] ?? null,
+            ];
 
-                return response()->json(['message' => 'Data pengguna berhasil diambil', 'data' => $userData], 200);
-            } catch (\Exception $e) {
-                return response()->json(['message' => 'Gagal mengambil data pengguna', 'error' => $e->getMessage()], 500);
-            }
+            return response()->json(['message' => 'Data pengguna berhasil diambil', 'data' => $userData], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Gagal mengambil data pengguna', 'error' => $e->getMessage()], 500);
         }
+    }
 
     public function tambahpengikut(Request $request)
     {

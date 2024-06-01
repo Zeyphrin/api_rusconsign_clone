@@ -9,7 +9,8 @@ class ProfileImage extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'pengikut', 'jumlah_jasa', 'jumlah_product', 'penilaian'
-    ];
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

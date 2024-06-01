@@ -9,6 +9,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Laravel\Sanctum\PersonalAccessToken;
+use Symfony\Component\HttpKernel\Profiler\Profile;
 
 class User extends Authenticatable
 {
@@ -23,11 +24,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'pengikut',
-        'jumlah_jasa',
-        'jumlah_product',
-        'penilaian'
-
+        'bio_desc',
+        'mitra_id',
     ];
 
     /**
@@ -52,11 +50,16 @@ class User extends Authenticatable
             'password' => 'hashed'
         ];
     }
-    protected $primaryKey = 'user_id';
+    protected $primaryKey = 'id';
 
     public function mitra()
     {
-        return $this->hasOne(Mitra::class);
+        return $this->BelongsTo(Mitra::class, 'mitra_id',"id");
+    }
+
+    public function profile()
+    {
+        return $this->hasOne(ProfileImage::class,'profile_id','id');
     }
 
 

@@ -47,6 +47,9 @@ Route::group([
     Route::put('cart/{id}', [CartController::class, 'update']);
     Route::delete('cart/{id}', [CartController::class, 'destroy']);
 
+
+    Route::get('profile', [ProfileController::class, 'profile']);
+
     // Like routes
     Route::get('likes', [LikeController::class, 'index']);
     Route::post('add-likes', [LikeController::class, 'store']);
@@ -54,7 +57,8 @@ Route::group([
 }
 );
 
-Route::get('dataprofile/{user}', [ProfileController::class, 'dataprofile']);
+Route::get('dataprofile}', [ProfileController::class, 'dataprofile']);
+
 
 Route::post('tambahjasa', [ProfileController::class, 'tambahjasa']);
 Route::post('tambahproduct', [ProfileController::class, 'tambahproduct']);
@@ -65,6 +69,7 @@ Route::get("index",[AuthController::class,"index"]);
 
 
  Route::put('accept/{id}', [AuthmitraController::class, 'accept']);
+Route::get("mitra/{id}", [AuthmitraController::class, "show"])->middleware('auth:sanctum');
  Route::delete('reject/{id}', [AuthmitraController::class, 'reject'])->middleware('auth:sanctum');
  Route::get('/mitra',[AuthmitraController::class, 'index']);
 Route::put('/mitras/{id}', [AuthmitraController::class, 'update'])->middleware('auth:sanctum');
@@ -75,6 +80,7 @@ Route::get("index", [AuthController::class, "index"]);
 
 Route::post('/registermitra', [AuthmitraController::class, 'registermitra'])->middleware('auth:sanctum');
 Route::put('mitra/{id}/accept', [AuthadminController::class, 'acceptMitra'])->middleware('auth:sanctum');
+
 Route::delete('mitra/{id}/reject', [AuthadminController::class, 'rejectMitra']);
 Route::post('registeradmin',[AuthadminController::class,'registeradmin']);
 Route::post('loginadmin',[AuthadminController::class,'loginadmin']);

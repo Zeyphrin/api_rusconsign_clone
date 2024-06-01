@@ -6,8 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
-use Validator;
 use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
@@ -26,40 +26,42 @@ class AuthController extends Controller
     }
     public function register(Request $request)
     {
+        // Validasi input
+        $request->validate([
+            "name" => "required|string",
+            "email" => "required|string|email|unique:users",
+            "password" => "required|string"
+        ]);
 
-        //validation
-      $request->validate([
-        "name" => "required|string",
-        "email" => "required|string|email|unique:users",
-        "password" => "required|string"
-      ]);
+        // Membuat user baru
+        $user = User::create([
+            "name" => $request->name,
+            "email" => $request->email,
+            "password" => bcrypt($request->password),
+            "mitra_id" => 0 // Tetapkan mitra_id menjadi 0 secara default
+        ]);
 
-      //user
-      User::create([
-        "name" => $request->name,
-        "email"=> $request->email,
-        "password"=> bcrypt($request->password)
-      ]);
-
-      return response()-> json([
-        "status"=> true,
-        "massage"=> "User registared succesfully",
-        "data"=> []
-      ]);
-
+        return response()->json([
+            "status" => true,
+            "message" => "User registered successfully",
+            "data" => [
+                "user" => $user
+            ]
+        ]);
     }
+
     public function login(Request $request)
     {
-        // Validate input
+        // Validasi input
         $request->validate([
             'email' => 'required|email|string',
             'password' => 'required|string|min:6'
         ]);
 
-        // Find user by email
+        // Cari user berdasarkan email
         $user = User::where('email', $request->email)->first();
 
-        // Check if user exists and password matches
+        // Periksa apakah user ada dan password cocok
         if (!$user || !Hash::check($request->password, $user->password)) {
             return response()->json([
                 'status' => false,
@@ -68,10 +70,12 @@ class AuthController extends Controller
             ], 401);
         }
 
-        // Create a personal access token
+        // Pastikan user berhasil diautentikasi
+        Auth::login($user);
+
+        // Buat token akses pribadi setelah user berhasil diotentikasi
         $token = $user->createToken('my-app-token')->plainTextToken;
 
-        // Send success response with token
         return response()->json([
             'status' => true,
             'message' => 'User logged in',
@@ -81,6 +85,7 @@ class AuthController extends Controller
             ]
         ]);
     }
+
     public function profile(Request $request)
     {
         $userData = auth()->user();
@@ -101,8 +106,8 @@ class AuthController extends Controller
 
         return response()->json([
             "status" => true,
-            "massage" =>"User logged out",
-            "data"=>[]
+            "massage" => "User logged out",
+            "data" => []
         ]);
     }
 
@@ -112,6 +117,7 @@ class AuthController extends Controller
             "title" => "user",
         ]);
     }
+
     public function destroy(Request $request, $id)
     {
         $user = User::find($id);
@@ -138,6 +144,7 @@ class AuthController extends Controller
             ], 500);
         }
     }
+
     public function editBio(Request $request, $user_id)
     {
         // Find the user by user_id

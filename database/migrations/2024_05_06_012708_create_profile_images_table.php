@@ -13,10 +13,8 @@ return new class extends Migration
     {
         Schema::create('profile_images', function (Blueprint $table) {
             $table->id();
-            $table->integer("pengikut");
-            $table->integer("jumlah_jasa");
-            $table->integer("jumlah_product");
-            $table->float("penilaian");
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->string('bio')->nullable();
             $table->timestamps();
         });
     }
