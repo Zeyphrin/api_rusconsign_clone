@@ -28,10 +28,6 @@ class AuthmitraController extends Controller
 
     public function show($id)
     {
-        if (!Auth::check()) {
-            return response()->json(['message' => 'Unauthorized'], 401);
-        }
-
         $mitra = Mitra::find($id);
         if (!$mitra) {
             return response()->json(['message' => 'Mitra not found'], 404);
