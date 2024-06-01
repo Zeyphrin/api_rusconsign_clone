@@ -68,10 +68,10 @@ Route::get("index",[AuthController::class,"index"]);
  // Routes for AuthmitraController
 
 
- Route::put('accept/{id}', [AuthmitraController::class, 'accept']);
-Route::get("mitra/{id}", [AuthmitraController::class, "show"])->middleware('auth:sanctum');
- Route::delete('reject/{id}', [AuthmitraController::class, 'reject'])->middleware('auth:sanctum');
- Route::get('/mitra',[AuthmitraController::class, 'index']);
+Route::put('accept/{id}', [AuthmitraController::class, 'accept']);
+Route::get("mitra/{id}", [AuthmitraController::class, "show"]);
+Route::delete('reject/{id}', [AuthmitraController::class, 'reject'])->middleware('auth:sanctum');
+Route::get('/mitra',[AuthmitraController::class, 'index']);
 Route::put('/mitras/{id}', [AuthmitraController::class, 'update'])->middleware('auth:sanctum');
 Route::delete('/mitras/{id}', [AuthmitraController::class, 'destroy'])->middleware('auth:sanctum');
 
