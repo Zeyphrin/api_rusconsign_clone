@@ -30,24 +30,39 @@ class ProfileController extends Controller
                 'bio_desc' => $user->bio_desc,
                 'created_at' => $user->created_at,
                 'updated_at' => $user->updated_at,
-                'profile_images' => $user->profileImages->map(function ($profileImage) {
-                    return [
-                        'mitra' => [
-                            'id' => $profileImage->mitra->id ?? null,
-                            'nama' => $profileImage->mitra->nama ?? null,
-                            'nama_toko' => $profileImage->mitra->nama_toko ?? null,
-                            'nis' => $profileImage->mitra->nis ?? null,
-                            'nomor' => $profileImage->mitra->nomor ?? null,
-                            'image' => $profileImage->mitra->image ?? null,
-                            'status' => $profileImage->mitra->status ?? null,
-                            'pengikut' => $profileImage->mitra->pengikut ?? null,
-                            'email' => $profileImage->mitra->email ?? null,
-                            'jumlahproduct' => $profileImage->mitra->jumlahproduct ?? null,
-                            'jumlahjasa' => $profileImage->mitra->jumlahjasa ?? null,
-                            'penilaian' => $profileImage->mitra->penilaian ?? null,
-                        ]
-                    ];
-                })
+                'id_mitra' => $user->profileImages->first()->mitra->id ?? null,
+                'nama' => $user->profileImages->first()->mitra->nama_lengkap ?? null,
+                'nama_toko' => $user->profileImages->first()->mitra->nama_toko ?? null,
+                'nis' => $user->profileImages->first()->mitra->nis ?? null,
+                'nomor' => $user->profileImages->first()->mitra->nomor ?? null,
+                'image' => $user->profileImages->first()->mitra->image_id_card ?? null,
+                'status' => $user->profileImages->first()->mitra->status ?? null,
+                'pengikut' => $user->profileImages->first()->mitra->pengikut ?? null,
+                'email_dariUser' => $user->profileImages->first()->mitra->email ?? null,
+                'jumlahproduct' => $user->profileImages->first()->mitra->jumlah_product ?? null,
+                'jumlahjasa' => $user->profileImages->first()->mitra->jumlah_jasa ?? null,
+                'penilaian' => $user->profileImages->first()->mitra->penilaian ?? null,
+//                'profile_images' => $user->profileImages->map(function ($profileImage) {
+//                    return [
+//                        'id' => $profileImage->id,
+//                        'image' => $profileImage->image, // Adjust if necessary
+//                        'bio' => $profileImage->bio,
+//                        'mitra' => [
+//                            'id' => $profileImage->mitra->id ?? null,
+//                            'nama' => $profileImage->mitra->nama_lengkap ?? null,
+//                            'nama_toko' => $profileImage->mitra->nama_toko ?? null,
+//                            'nis' => $profileImage->mitra->nis ?? null,
+//                            'nomor' => $profileImage->mitra->nomor ?? null,
+//                            'image' => $profileImage->mitra->image_id_card ?? null,
+//                            'status' => $profileImage->mitra->status ?? null,
+//                            'pengikut' => $profileImage->mitra->pengikut ?? null,
+//                            'email' => $profileImage->mitra->email ?? null,
+//                            'jumlahproduct' => $profileImage->mitra->jumlah_product ?? null,
+//                            'jumlahjasa' => $profileImage->mitra->jumlah_jasa ?? null,
+//                            'penilaian' => $profileImage->mitra->penilaian ?? null,
+//                        ]
+//                    ];
+//                })
             ];
 
             return response()->json([

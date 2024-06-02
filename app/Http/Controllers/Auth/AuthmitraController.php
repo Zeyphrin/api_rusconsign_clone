@@ -85,8 +85,9 @@ class AuthmitraController extends Controller
         $mitra->email = $userEmail;
 
         if ($mitra->save()) {
-            $user->mitra_id = $mitra->id;
-            $user->save();
+            $profileImage = $user->profileImages()->firstOrNew([]);
+            $profileImage->mitra_id = $mitra->id;
+            $profileImage->save();
 
             return new MitraResource($mitra);
         } else {
