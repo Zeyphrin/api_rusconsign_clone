@@ -60,7 +60,7 @@ class AuthmitraController extends Controller
             $mitraId = $request->input('mitra_id');
             $imagePath = "mitra_images/{$mitraId}_{$imageName}";
 
-            $imagePath  = $image->storeAs('mitra_images', $imageName);
+            $imagePath = $image->storeAs('mitra_images', $imageName);
 
             $imageIdCardPath = Storage::url($imagePath);
         } else {
@@ -85,6 +85,9 @@ class AuthmitraController extends Controller
         $mitra->email = $userEmail;
 
         if ($mitra->save()) {
+            $user->mitra_id = $mitra->id;
+            $user->save();
+
             return new MitraResource($mitra);
         } else {
             return response()->json(['message' => 'Failed to register mitra'], 500);
