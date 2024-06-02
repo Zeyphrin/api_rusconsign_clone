@@ -28,6 +28,7 @@ class MitraResource extends JsonResource
             'jumlahproduct'=>$this->jumlah_product,
             'jumlahjasa'=>$this->jumlah_jasa,
             'penilaian'=>$this->penilaian,
+            'user' => new UserResource($this->whenLoaded('user')),
         ];
     }
 }

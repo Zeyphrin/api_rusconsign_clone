@@ -48,7 +48,7 @@ Route::group([
     Route::delete('cart/{id}', [CartController::class, 'destroy']);
 
 
-    Route::get('profile', [ProfileController::class, 'profile']);
+    Route::get('allprofile', [ProfileController::class, 'allprofile']);
 
     // Like routes
     Route::get('likes', [LikeController::class, 'index']);

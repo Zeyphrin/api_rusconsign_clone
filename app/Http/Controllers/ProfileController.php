@@ -13,17 +13,46 @@ use Symfony\Component\HttpKernel\Profiler\Profile;
 class ProfileController extends Controller
 {
 
-    public function profile()
+    public function allprofile()
     {
         $user = Auth::user();
 
-        // Muat data relasi profile
         if ($user) {
-            $user->load('profile');
+            // Load the profileImages relationship along with the mitra relationship
+            $user->load('profileImages.mitra');
+
+            // Prepare the response data by combining user and mitra data
+            $data = [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'email_verified_at' => $user->email_verified_at,
+                'bio_desc' => $user->bio_desc,
+                'created_at' => $user->created_at,
+                'updated_at' => $user->updated_at,
+                'profile_images' => $user->profileImages->map(function ($profileImage) {
+                    return [
+                        'mitra' => [
+                            'id' => $profileImage->mitra->id ?? null,
+                            'nama' => $profileImage->mitra->nama ?? null,
+                            'nama_toko' => $profileImage->mitra->nama_toko ?? null,
+                            'nis' => $profileImage->mitra->nis ?? null,
+                            'nomor' => $profileImage->mitra->nomor ?? null,
+                            'image' => $profileImage->mitra->image ?? null,
+                            'status' => $profileImage->mitra->status ?? null,
+                            'pengikut' => $profileImage->mitra->pengikut ?? null,
+                            'email' => $profileImage->mitra->email ?? null,
+                            'jumlahproduct' => $profileImage->mitra->jumlahproduct ?? null,
+                            'jumlahjasa' => $profileImage->mitra->jumlahjasa ?? null,
+                            'penilaian' => $profileImage->mitra->penilaian ?? null,
+                        ]
+                    ];
+                })
+            ];
 
             return response()->json([
                 "message" => "Data user berhasil didapatkan",
-                "data" => $user
+                "data" => $data
             ]);
         }
 
@@ -31,8 +60,6 @@ class ProfileController extends Controller
             "message" => "User tidak terautentikasi",
             "data" => null
         ], 401);
-
-
     }
 
     public function index()

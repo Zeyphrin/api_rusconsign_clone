@@ -54,12 +54,12 @@ class User extends Authenticatable
 
     public function mitra()
     {
-        return $this->BelongsTo(Mitra::class, 'mitra_id',"id");
+        return $this->hasMany(Mitra::class, 'user_id', 'id');
     }
 
-    public function profile()
+    public function profileImages()
     {
-        return $this->hasOne(ProfileImage::class,'profile_id','id');
+        return $this->hasMany(ProfileImage::class, 'user_id', 'id');
     }
 
 
