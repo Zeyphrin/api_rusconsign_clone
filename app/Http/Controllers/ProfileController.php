@@ -42,27 +42,6 @@ class ProfileController extends Controller
                 'jumlahproduct' => $user->profileImages->first()->mitra->jumlah_product ?? null,
                 'jumlahjasa' => $user->profileImages->first()->mitra->jumlah_jasa ?? null,
                 'penilaian' => $user->profileImages->first()->mitra->penilaian ?? null,
-//                'profile_images' => $user->profileImages->map(function ($profileImage) {
-//                    return [
-//                        'id' => $profileImage->id,
-//                        'image' => $profileImage->image, // Adjust if necessary
-//                        'bio' => $profileImage->bio,
-//                        'mitra' => [
-//                            'id' => $profileImage->mitra->id ?? null,
-//                            'nama' => $profileImage->mitra->nama_lengkap ?? null,
-//                            'nama_toko' => $profileImage->mitra->nama_toko ?? null,
-//                            'nis' => $profileImage->mitra->nis ?? null,
-//                            'nomor' => $profileImage->mitra->nomor ?? null,
-//                            'image' => $profileImage->mitra->image_id_card ?? null,
-//                            'status' => $profileImage->mitra->status ?? null,
-//                            'pengikut' => $profileImage->mitra->pengikut ?? null,
-//                            'email' => $profileImage->mitra->email ?? null,
-//                            'jumlahproduct' => $profileImage->mitra->jumlah_product ?? null,
-//                            'jumlahjasa' => $profileImage->mitra->jumlah_jasa ?? null,
-//                            'penilaian' => $profileImage->mitra->penilaian ?? null,
-//                        ]
-//                    ];
-//                })
             ];
 
             return response()->json([

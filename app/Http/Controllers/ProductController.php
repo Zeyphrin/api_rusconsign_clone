@@ -33,13 +33,26 @@ class ProductController extends Controller
             'price_product' => 'required|numeric',
             'rating_product' => 'required|numeric',
             'image' => 'required|image',
-            'mitra_id' => 'required|exists:mitras,id',
         ]);
 
-        $mitra = Mitra::find($validatedData['mitra_id']);
+        $user = Auth::user();
+        if (!$user) {
+            return response()->json(['message' => 'Unauthenticated'], 401);
+        }
 
-        if ($mitra->status !== 'accepted') {
-            return response()->json(['message' => 'Mitra not accepted'], 403);
+        // Access Mitra ID from the authenticated user's profileImage
+        $profileImage = $user->profileImages()->first();
+
+        if (!$profileImage) {
+            return response()->json(['message' => 'Profile image not found'], 404);
+        }
+
+        // Access the Mitra ID from the ProfileImage
+        $mitraId = $profileImage->mitra_id;
+        $mitra = Mitra::find($mitraId);
+
+        if (!$mitra) {
+            return response()->json(['message' => 'Mitra not found'], 404);
         }
 
         $product = new Product();
@@ -50,14 +63,30 @@ class ProductController extends Controller
 
         $imagePath = $request->file('image')->store('public/images');
         $product->image = basename($imagePath);
-        $product->mitra_id = $validatedData['mitra_id'];
+        $product->mitra_id = $mitraId;
         $product->save();
 
+        // Update jumlah_product in Mitra
         $mitra->jumlah_product += 1;
         $mitra->save();
 
-            return response()->json(['message' => 'Produk berhasil ditambahkan', 'product' => $product], 201);
-        }
+        // Prepare the response data with mitra details
+        $mitraData = [
+            'id' => $mitra->id,
+            'name' => $mitra->nama_lengkap,
+            'jumlah_product' => $mitra->jumlah_product,
+            'jumlah_jasa' => $mitra->jumlah_jasa,
+            'pengikut' =>$mitra->pengikut,
+            'penilaian' => $mitra->penilaian,
+        ];
+
+        return response()->json([
+            'message' => 'Produk berhasil ditambahkan',
+            'product' => $product,
+            'mitra' => $mitraData,
+        ], 201);
+    }
+
 
 
     public function update(Request $request, $id)

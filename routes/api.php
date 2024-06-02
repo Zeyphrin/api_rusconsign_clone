@@ -50,6 +50,8 @@ Route::group([
 
     Route::get('allprofile', [ProfileController::class, 'allprofile']);
 
+    Route::post('add-product', [ProductController::class, 'addProduct']);
+
     // Like routes
     Route::get('likes', [LikeController::class, 'index']);
     Route::post('add-likes', [LikeController::class, 'store']);
@@ -103,7 +105,7 @@ Route::get('storage/{path}', function ($path) {
 })->where('path', '.*');
 
 
-Route::post('add-product', [ProductController::class, 'addProduct']);
+
 Route::get('/product',[ProductController::class, 'index']);
 Route::put('/edit-products/{id}', [ProductController::class, 'update']);
 Route::delete('/products/{id}', [ProductController::class, 'destroy']);
