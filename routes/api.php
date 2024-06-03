@@ -52,7 +52,7 @@ Route::group([
     Route::get('allprofile', [ProfileController::class, 'allprofile']);
     Route::post('edit-profile', [ProfileController::class, 'editProfile']);
 
-    Route::post('addBarang', [\App\Http\Controllers\BarangController::class, 'addBarang']);
+    Route::post('add-barang', [\App\Http\Controllers\BarangController::class, 'addBarang']);
 
     Route::post('edit-barang/{id}', [\App\Http\Controllers\BarangController::class, 'editBarang']);
     Route::delete('delete-barang/{id}', [\App\Http\Controllers\BarangController::class, 'deleteBarang']);
