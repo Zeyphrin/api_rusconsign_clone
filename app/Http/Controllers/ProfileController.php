@@ -55,21 +55,19 @@ class ProfileController extends Controller
         ], 401);
     }
 
-    public function editprofile(Request $request)
+    public function editProfile(Request $request)
     {
         $user = Auth::user();
         if (!$user) {
             return response()->json(['message' => 'Unauthenticated'], 401);
         }
 
-        // Validasi data yang diterima dari request
         $validatedData = $request->validate([
             'name' => 'sometimes|string|max:255',
             'bio_desc' => 'sometimes|string',
             'image_profile' => 'sometimes|image',
         ]);
 
-        // Update data user
         if (isset($validatedData['name'])) {
             $user->name = $validatedData['name'];
         }

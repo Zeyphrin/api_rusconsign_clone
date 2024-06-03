@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\AuthmitraController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
+use App\Http\Controllers\BarangController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\JasaController;
 use App\Http\Controllers\LikeController;
@@ -49,9 +50,10 @@ Route::group([
 
 
     Route::get('allprofile', [ProfileController::class, 'allprofile']);
-    Route::post('edit-profile', [ProfileController::class, 'editprofile ']);
+    Route::post('edit-profile', [ProfileController::class, 'editprofile']);
 
     Route::post('add-barang', [\App\Http\Controllers\BarangController::class, 'addBarang']);
+    Route::get('/barang/{id}', [BarangController::class, 'show']);
     Route::post('edit-barang/{id}', [\App\Http\Controllers\BarangController::class, 'editBarang']);
     Route::delete('delete-barang/{id}', [\App\Http\Controllers\BarangController::class, 'deleteBarang']);
 

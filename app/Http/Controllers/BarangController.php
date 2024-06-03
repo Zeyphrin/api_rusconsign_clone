@@ -49,6 +49,40 @@ class BarangController extends Controller
         ], 200);
     }
 
+    public function show($id)
+    {
+        $barang = Barang::with('category:id,name', 'mitra:id,nama_lengkap,jumlah_product,jumlah_jasa,pengikut,penilaian')->find($id);
+
+        if (!$barang) {
+            return response()->json(['message' => 'Barang tidak ditemukan'], 404);
+        }
+
+        $barangData = [
+            'id' => $barang->id,
+            'nama_barang' => $barang->nama_barang,
+            'deskrpsi' => $barang->deskrpsi,
+            'harga' => $barang->harga,
+            'rating_barang' => $barang->rating_barang,
+            'category_name' => $barang->category->name,
+            'image_barang' => $barang->image_barang,
+            'created_at' => $barang->created_at,
+            'updated_at' => $barang->updated_at,
+            'mitra' => [
+                'id' => $barang->mitra->id,
+                'nama_lengkap' => $barang->mitra->nama_lengkap,
+                'jumlah_product' => $barang->mitra->jumlah_product,
+                'jumlah_jasa' => $barang->mitra->jumlah_jasa,
+                'pengikut' => $barang->mitra->pengikut,
+                'penilaian' => $barang->mitra->penilaian,
+            ],
+        ];
+
+        return response()->json([
+            'message' => 'Data barang berhasil ditemukan',
+            'barang' => $barangData,
+        ], 200);
+    }
+
         public function addBarang(Request $request)
         {
             $validatedData = $request->validate([
@@ -167,9 +201,27 @@ class BarangController extends Controller
             return response()->json(['message' => 'Barang tidak ditemukan'], 404);
         }
 
-        if ($barang->mitra_id !== $user->profileImages()->first()->mitra_id) {
+        $profileImage = $user->profileImages()->first();
+        if (!$profileImage) {
+            return response()->json(['message' => 'Profile image not found'], 404);
+        }
+
+        if ($barang->mitra_id !== $profileImage->mitra_id) {
             return response()->json(['message' => 'Tidak diizinkan untuk menghapus barang ini'], 403);
         }
+
+        $mitra = Mitra::find($barang->mitra_id);
+        if (!$mitra) {
+            return response()->json(['message' => 'Mitra not found'], 404);
+        }
+
+        if ($barang->category_id == 1) {
+            $mitra->jumlah_product = max(0, $mitra->jumlah_product - 1); // Pastikan tidak negatif
+        } elseif ($barang->category_id == 2) {
+            $mitra->jumlah_jasa = max(0, $mitra->jumlah_jasa - 1); // Pastikan tidak negatif
+        }
+
+        $mitra->save();
 
         $barang->delete();
 
@@ -177,5 +229,6 @@ class BarangController extends Controller
             'message' => 'Barang berhasil dihapus',
         ], 200);
     }
+
 
 }
