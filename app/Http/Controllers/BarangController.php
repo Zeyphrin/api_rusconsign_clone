@@ -89,7 +89,7 @@ class BarangController extends Controller
                 'nama_barang' => 'required|string|max:255',
                 'deskrpsi' => 'required|string',
                 'harga' => 'required|integer',
-                'rating_barang' => 'sometime|numeric',
+                'rating_barang' => 'required|numeric',
                 'category_id' => 'required|in:1,2',
                 'image_barang' => 'required|image',
             ]);
@@ -115,7 +115,7 @@ class BarangController extends Controller
             $barang->nama_barang = $validatedData['nama_barang'];
             $barang->deskrpsi = $validatedData['deskrpsi'];
             $barang->harga = $validatedData['harga'];
-            $barang->rating_barang = $validatedData['rating_barang']?? null;
+            $barang->rating_barang = $validatedData['rating_barang'];
             $barang->category_id = $validatedData['category_id'];
             $barang->image_barang = basename($imagePath);
             $barang->mitra_id = $mitraId;
