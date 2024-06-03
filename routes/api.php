@@ -50,7 +50,8 @@ Route::group([
 
     Route::get('allprofile', [ProfileController::class, 'allprofile']);
 
-    Route::post('add-product', [ProductController::class, 'addProduct']);
+    Route::post('add-barang', [\App\Http\Controllers\BarangController::class, 'addBarang']);
+
 
     // Like routes
     Route::get('likes', [LikeController::class, 'index']);
@@ -60,10 +61,11 @@ Route::group([
 );
 
 Route::get('dataprofile}', [ProfileController::class, 'dataprofile']);
-
+Route::get('barang', [\App\Http\Controllers\BarangController::class, 'index']);
 
 Route::post('tambahjasa', [ProfileController::class, 'tambahjasa']);
 Route::post('tambahproduct', [ProfileController::class, 'tambahproduct']);
+Route::post('add-category', [\App\Http\Controllers\CategoryController::class, 'addCategory']);
 
 Route::get("index",[AuthController::class,"index"]);
 

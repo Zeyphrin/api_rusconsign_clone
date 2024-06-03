@@ -18,10 +18,8 @@ class ProfileController extends Controller
         $user = Auth::user();
 
         if ($user) {
-            // Load the profileImages relationship along with the mitra relationship
             $user->load('profileImages.mitra');
 
-            // Prepare the response data by combining user and mitra data
             $data = [
                 'id' => $user->id,
                 'name' => $user->name,
