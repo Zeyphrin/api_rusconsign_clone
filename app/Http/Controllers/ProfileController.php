@@ -29,6 +29,7 @@ class ProfileController extends Controller
                 'created_at' => $user->created_at,
                 'updated_at' => $user->updated_at,
                 'id_mitra' => $user->profileImages->first()->mitra->id ?? null,
+                'image_profile'=>$user->profileImages->first()->mitra->image_profile ?? null,
                 'nama' => $user->profileImages->first()->mitra->nama_lengkap ?? null,
                 'nama_toko' => $user->profileImages->first()->mitra->nama_toko ?? null,
                 'nis' => $user->profileImages->first()->mitra->nis ?? null,
@@ -54,87 +55,37 @@ class ProfileController extends Controller
         ], 401);
     }
 
-    public function index()
+    public function editprofile(Request $request)
     {
+        $user = Auth::user();
+        if (!$user) {
+            return response()->json(['message' => 'Unauthenticated'], 401);
+        }
 
-    }
-
-    public function dataprofile(Request $request, $user)
-    {
-        // Validate request parameters
+        // Validasi data yang diterima dari request
         $validatedData = $request->validate([
-            'user' => 'string',
-            'pengikut' => 'integer|nullable',
-            'jumlah_jasa' => 'integer|nullable',
-            'jumlah_product' => 'integer|nullable',
-            'penilaian' => 'numeric|min:0|max:5|nullable',
+            'name' => 'sometimes|string|max:255',
+            'bio_desc' => 'sometimes|string',
+            'image_profile' => 'sometimes|image',
         ]);
 
-        try {
-            $user = User::where('name', $user)->firstOrFail();
-            $userData = [
-                'name' => $user->name,
-                'email' => $user->email,
-                'pengikut' => $validatedData['pengikut'] ?? null,
-                'jumlah_jasa' => $validatedData['jumlah_jasa'] ?? null,
-                'jumlah_product' => $validatedData['jumlah_product'] ?? null,
-                'penilaian' => $validatedData['penilaian'] ?? null,
-            ];
-
-            return response()->json(['message' => 'Data pengguna berhasil diambil', 'data' => $userData], 200);
-        } catch (\Exception $e) {
-            return response()->json(['message' => 'Gagal mengambil data pengguna', 'error' => $e->getMessage()], 500);
+        // Update data user
+        if (isset($validatedData['name'])) {
+            $user->name = $validatedData['name'];
         }
-    }
-
-    public function tambahpengikut(Request $request)
-    {
-        try {
-            // Check if the user is authenticated
-            if (!Auth::check()) {
-                return response()->json(['message' => 'User not authenticated'], 401);
-            }
-
-            $validatedData = $request->validate([
-                'pengikut' => 'required|integer',
-            ]);
-
-            $user = Auth::user();
-            $user->pengikut += $validatedData['pengikut'];
-            $user->save();
-
-            return response()->json(['message' => 'Pengikut berhasil ditambahkan'], 200);
-        } catch (\Exception $e) {
-            return response()->json(['message' => 'Gagal menambahkan pengikut', 'error' => $e->getMessage()], 500);
+        if (isset($validatedData['bio_desc'])) {
+            $user->bio_desc = $validatedData['bio_desc'];
         }
-    }
-
-    public function tambahjasa(Request $request)
-    {
-        try {
-            $currentJasaCount = Jasa::count();
-            $newJasaCount = $currentJasaCount + 1;
-
-            $jasa = Jasa::firstOrCreate(['name' => 'service_count'], ['count' => $newJasaCount]);
-
-            return response()->json(['message' => 'Jasa berhasil ditambahkan', 'total_jasa' => $newJasaCount], 201);
-        } catch (\Exception $e) {
-            return response()->json(['message' => 'Gagal menambahkan jasa', 'error' => $e->getMessage()], 500);
+        if (isset($validatedData['image_profile'])) {
+            $imagePath = $request->file('image_profile')->store('public/images');
+            $user->image_profile = basename($imagePath);
         }
-    }
+        $user->save();
 
-    public function tambahproduct(Request $request)
-    {
-        try {
-            $currentProductCount = Product::count();
-            $newProductCount = $currentProductCount + 1;
-
-            $product = Product::firstOrCreate(['name' => 'service_count'], ['count' => $newProductCount]);
-
-            return response()->json(['message' => 'Product berhasil ditambahkan', 'total_product' => $newProductCount], 201);
-        } catch (\Exception $e) {
-            return response()->json(['message' => 'Gagal menambahkan product', 'error' => $e->getMessage()], 500);
-        }
+        return response()->json([
+            'message' => 'Profil berhasil diperbarui',
+            'user' => $user,
+        ], 200);
     }
 }
 

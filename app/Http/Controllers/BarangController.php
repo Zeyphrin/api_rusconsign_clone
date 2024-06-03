@@ -118,4 +118,64 @@ class BarangController extends Controller
             ], 201);
         }
 
+    public function editBarang(Request $request, $id)
+    {
+        $user = Auth::user();
+        if (!$user) {
+            return response()->json(['message' => 'Unauthenticated'], 401);
+        }
+
+        $barang = Barang::find($id);
+        if (!$barang) {
+            return response()->json(['message' => 'Barang tidak ditemukan'], 404);
+        }
+
+
+        $validatedData = $request->validate([
+            'nama_barang' => 'required|string|max:255',
+            'deskrpsi' => 'required|string',
+            'harga' => 'required|integer',
+            'rating_barang' => 'required|numeric',
+            'category_id' => 'required|in:1,2',
+            'image_barang' => 'required|image',
+        ]);
+
+        $barang->nama_barang = $validatedData['nama_barang'];
+        $barang->deskrpsi = $validatedData['deskrpsi'];
+        $barang->harga = $validatedData['harga'];
+        $barang->rating_barang = $validatedData['rating_barang'];
+        $barang->category_id = $validatedData['category_id'];
+
+        $barang->save();
+
+        return response()->json([
+            'message' => 'Barang berhasil diupdate',
+            'barang' => $barang,
+        ], 200);
+    }
+
+
+    public function deleteBarang(Request $request, $id)
+    {
+        $user = Auth::user();
+        if (!$user) {
+            return response()->json(['message' => 'Unauthenticated'], 401);
+        }
+
+        $barang = Barang::find($id);
+        if (!$barang) {
+            return response()->json(['message' => 'Barang tidak ditemukan'], 404);
+        }
+
+        if ($barang->mitra_id !== $user->profileImages()->first()->mitra_id) {
+            return response()->json(['message' => 'Tidak diizinkan untuk menghapus barang ini'], 403);
+        }
+
+        $barang->delete();
+
+        return response()->json([
+            'message' => 'Barang berhasil dihapus',
+        ], 200);
+    }
+
 }
