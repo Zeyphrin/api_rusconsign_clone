@@ -50,7 +50,7 @@ Route::group([
 
 
     Route::get('allprofile', [ProfileController::class, 'allprofile']);
-    Route::post('edit-profile', [ProfileController::class, 'editprofile']);
+    Route::post('edit-profile', [ProfileController::class, 'editProfile']);
 
     Route::post('add-barang', [\App\Http\Controllers\BarangController::class, 'addBarang']);
     Route::get('/barang/{id}', [BarangController::class, 'show']);

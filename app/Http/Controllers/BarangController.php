@@ -89,7 +89,7 @@ class BarangController extends Controller
                 'nama_barang' => 'required|string|max:255',
                 'deskrpsi' => 'required|string',
                 'harga' => 'required|integer',
-                'rating_barang' => 'required|numeric',
+                'rating_barang' => 'numeric',
                 'category_id' => 'required|in:1,2',
                 'image_barang' => 'required|image',
             ]);
