@@ -129,7 +129,7 @@ class BarangController extends Controller
             $barang->nama_barang = $validatedData['nama_barang'];
             $barang->deskripsi = $validatedData['deskripsi'];
             $barang->harga = $validatedData['harga'];
-            $barang->rating_barang = $validatedData['rating_barang'] ?? 0;
+            $barang->rating_barang = $validatedData['rating_barang'] ?? 0.0;
             $barang->category_id = $validatedData['category_id'];
             $barang->image_barang = $imageProductPath;
             $barang->mitra_id = $mitraId;
