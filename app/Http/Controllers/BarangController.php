@@ -84,7 +84,7 @@ class BarangController extends Controller
         ], 200);
     }
 
-        public function addBarang(Request $request)
+    public function addBarang(Request $request)
         {
             $validatedData = $request->validate([
                 'nama_barang' => 'required|string|max:255',
@@ -201,7 +201,6 @@ class BarangController extends Controller
             'barang' => $barang,
         ], 200);
     }
-
 
     public function deleteBarang(Request $request, $id)
     {
