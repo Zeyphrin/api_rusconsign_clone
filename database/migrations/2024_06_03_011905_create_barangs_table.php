@@ -17,7 +17,7 @@ return new class extends Migration
             $table->text('deskrpsi');
             $table->integer('harga');
             $table->float('rating_barang') ;
-            $table->foreignId('category_id');
+            $table->foreignId('category_id')->nullable();
             $table->foreignId('mitra_id')->constrained('mitras')->onDelete('cascade');
             $table->string('image_barang');
             $table->timestamps();

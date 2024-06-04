@@ -8,6 +8,7 @@ use App\Models\Mitra;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class BarangController extends Controller
 {
@@ -89,7 +90,7 @@ class BarangController extends Controller
                 'nama_barang' => 'required|string|max:255',
                 'deskrpsi' => 'required|string',
                 'harga' => 'required|integer',
-                'rating_barang' => 'required|numeric',
+                'rating_barang' => 'numeric',
                 'category_id' => 'required|in:1,2',
                 'image_barang' => 'required|image',
             ]);
@@ -104,6 +105,19 @@ class BarangController extends Controller
                 return response()->json(['message' => 'Profile image not found'], 404);
             }
 
+            if ($request->hasFile('image_barang')) {
+                $image = $request->file('image_barang');
+
+                $imageName = $image->getClientOriginalName();
+                $mitraId = $request->input('mitra_id');
+                $imagePath = "product_images/{$mitraId}_{$imageName}";
+
+                $imagePath = $image->storeAs('product_images', $imageName);
+
+                $imageProductPath = Storage::url($imagePath);
+            }
+
+
             $mitraId = $profileImage->mitra_id;
             $mitra = Mitra::find($mitraId);
             if (!$mitra) {
@@ -115,9 +129,9 @@ class BarangController extends Controller
             $barang->nama_barang = $validatedData['nama_barang'];
             $barang->deskrpsi = $validatedData['deskrpsi'];
             $barang->harga = $validatedData['harga'];
-            $barang->rating_barang = $validatedData['rating_barang'];
+            $barang->rating_barang = $validatedData['rating_barang'] ?? null;
             $barang->category_id = $validatedData['category_id'];
-            $barang->image_barang = basename($imagePath);
+            $barang->image_barang = $imageProductPath;
             $barang->mitra_id = $mitraId;
             $barang->save();
 
@@ -169,7 +183,7 @@ class BarangController extends Controller
             'nama_barang' => 'required|string|max:255',
             'deskrpsi' => 'required|string',
             'harga' => 'required|integer',
-            'rating_barang' => 'required|numeric',
+            'rating_barang' => 'numeric',
             'category_id' => 'required|in:1,2',
             'image_barang' => 'required|image',
         ]);

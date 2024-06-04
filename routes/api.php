@@ -52,10 +52,10 @@ Route::group([
     Route::get('allprofile', [ProfileController::class, 'allprofile']);
     Route::post('edit-profile', [ProfileController::class, 'editProfile']);
 
-    Route::post('add-barang', [\App\Http\Controllers\BarangController::class, 'addBarang']);
+    Route::post('/mitra/add-barang', [\App\Http\Controllers\BarangController::class, 'addBarang']);
 
-    Route::post('edit-barang/{id}', [\App\Http\Controllers\BarangController::class, 'editBarang']);
-    Route::delete('delete-barang/{id}', [\App\Http\Controllers\BarangController::class, 'deleteBarang']);
+    Route::post('/mitra/edit-barang/{id}', [\App\Http\Controllers\BarangController::class, 'editBarang']);
+    Route::delete('/mitra/delete-barang/{id}', [\App\Http\Controllers\BarangController::class, 'deleteBarang']);
 
 
     // Like routes
@@ -65,12 +65,12 @@ Route::group([
 }
 );
 
-Route::get('dataprofile}', [ProfileController::class, 'dataprofile']);
+Route::get('dataprofile', [ProfileController::class, 'dataprofile']);
 Route::get('barang', [\App\Http\Controllers\BarangController::class, 'index']);
 Route::get('/barang/{id}', [BarangController::class, 'show']);
 
 Route::post('tambahjasa', [ProfileController::class, 'tambahjasa']);
-Route::post('tambahproduct', [ProfileController::class, 'tambahproduct']);
+Route::post( 'tambahproduct', [ProfileController::class, 'tambahproduct']);
 Route::post('add-category', [\App\Http\Controllers\CategoryController::class, 'addCategory']);
 
 Route::get("index",[AuthController::class,"index"]);
