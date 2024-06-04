@@ -244,5 +244,43 @@ class BarangController extends Controller
         ], 200);
     }
 
+    public function getBarangsByMitraId($mitra_id)
+    {
+        $user = Auth::user();
+        if (!$user) {
+            return response()->json(['message' => 'Unauthenticated'], 401);
+        }
+
+        $mitra = Mitra::find($mitra_id);
+        if (!$mitra) {
+            return response()->json(['message' => 'Mitra tidak ditemukan'], 404);
+        }
+
+        $barangs = Barang::where('mitra_id', $mitra_id)->with('category:id,name')->get();
+
+        if ($barangs->isEmpty()) {
+            return response()->json(['message' => 'Tidak ada barang yang ditemukan untuk mitra ini'], 404);
+        }
+
+        $barangData = [];
+        foreach ($barangs as $barang) {
+            $barangData[] = [
+                'id' => $barang->id,
+                'nama_barang' => $barang->nama_barang,
+                'deskrpsi' => $barang->deskrpsi,
+                'harga' => $barang->harga,
+                'rating_barang' => $barang->rating_barang,
+                'category_name' => $barang->category->name,
+                'image_barang' => $barang->image_barang,
+                'created_at' => $barang->created_at,
+                'updated_at' => $barang->updated_at,
+            ];
+        }
+
+        return response()->json([
+            'message' => 'Data barang berhasil ditemukan',
+            'barangs' => $barangData,
+        ], 200);
+    }
 
 }
