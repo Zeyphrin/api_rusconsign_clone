@@ -62,6 +62,7 @@ Route::group([
     Route::get('likes', [LikeController::class, 'index']);
     Route::post('likes', [LikeController::class, 'favorite']);
     Route::delete('/likes/{barang_id}', [LikeController::class, 'unfavorite']);
+    Route::get('/barangs/filter', [BarangController::class, 'filterProductsByCategory']);
 }
 );
 
