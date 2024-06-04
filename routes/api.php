@@ -60,8 +60,8 @@ Route::group([
 
     // Like routes
     Route::get('likes', [LikeController::class, 'index']);
-    Route::post('add-likes', [LikeController::class, 'store']);
-    Route::delete('likes/{id}', [LikeController::class, 'destroy']);
+    Route::post('likes', [LikeController::class, 'store']);
+    Route::delete('/likes/{barang_id}', [LikeController::class, 'destroy']);
 }
 );
 

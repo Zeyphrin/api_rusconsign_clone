@@ -10,26 +10,28 @@ class CartController extends Controller
 {
     public function index()
     {
-        $cartItems = Cart::where('user_id', Auth::id())->with('product')->get();
+        $cartItems = Cart::where('user_id', Auth::id())->with('barang')->get();
         return response()->json($cartItems, 200);
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'product_id' => 'required|exists:products,id',
+            'barang_id' => 'required|exists:barangs,id',
             'quantity' => 'required|integer|min:1',
         ]);
 
         $cartItem = Cart::updateOrCreate(
             [
                 'user_id' => Auth::id(),
-                'product_id' => $request->product_id,
+                'barang_id' => $request->barang_id,
             ],
             [
                 'quantity' => $request->quantity,
             ]
         );
+
+        $cartItem->load('barang');
 
         return response()->json(['message' => 'Product added to cart', 'cartItem' => $cartItem], 201);
     }
@@ -61,5 +63,4 @@ class CartController extends Controller
         $cartItem->delete();
         return response()->json(['message' => 'Cart item removed'], 200);
     }
-
 }

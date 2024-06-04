@@ -22,7 +22,7 @@
                 $table->string("no_dompet_digital");
                 $table->string("image_id_card");
                 $table->string("status");
-                $table->integer("pengikut")->nullable();
+                $table->integer("pengikut")->nullable()->default(0);
                 $table->integer("jumlah_jasa")->default(0);
                 $table->integer("jumlah_product")->default(0);
                 $table->float("penilaian")->default(0);
