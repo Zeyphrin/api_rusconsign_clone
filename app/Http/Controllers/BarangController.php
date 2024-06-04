@@ -26,7 +26,7 @@ class BarangController extends Controller
             $barangData[] = [
                 'id' => $barang->id,
                 'nama_barang' => $barang->nama_barang,
-                'deskrpsi' => $barang->deskrpsi,
+                'deskripsi' => $barang->deskripsi,
                 'harga' => $barang->harga,
                 'rating_barang' => $barang->rating_barang,
                 'category_name' => $barang->category->name,
@@ -61,7 +61,7 @@ class BarangController extends Controller
         $barangData = [
             'id' => $barang->id,
             'nama_barang' => $barang->nama_barang,
-            'deskrpsi' => $barang->deskrpsi,
+            'deskripsi' => $barang->deskripsi,
             'harga' => $barang->harga,
             'rating_barang' => $barang->rating_barang,
             'category_name' => $barang->category->name,
@@ -181,7 +181,7 @@ class BarangController extends Controller
 
         $validatedData = $request->validate([
             'nama_barang' => 'required|string|max:255',
-            'deskrpsi' => 'required|string',
+            'deskripsi' => 'required|string',
             'harga' => 'required|integer',
             'rating_barang' => 'numeric',
             'category_id' => 'required|in:1,2',
@@ -189,7 +189,7 @@ class BarangController extends Controller
         ]);
 
         $barang->nama_barang = $validatedData['nama_barang'];
-        $barang->deskrpsi = $validatedData['deskrpsi'];
+        $barang->deskripsi = $validatedData['deskripsi'];
         $barang->harga = $validatedData['harga'];
         $barang->rating_barang = $validatedData['rating_barang'];
         $barang->category_id = $validatedData['category_id'];
@@ -266,7 +266,7 @@ class BarangController extends Controller
             $barangData[] = [
                 'id' => $barang->id,
                 'nama_barang' => $barang->nama_barang,
-                'deskrpsi' => $barang->deskrpsi,
+                'deskripsi' => $barang->deskripsi,
                 'harga' => $barang->harga,
                 'rating_barang' => $barang->rating_barang,
                 'category_name' => $barang->category->name,
