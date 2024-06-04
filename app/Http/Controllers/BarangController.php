@@ -88,7 +88,7 @@ class BarangController extends Controller
         {
             $validatedData = $request->validate([
                 'nama_barang' => 'required|string|max:255',
-                'deskrpsi' => 'required|string',
+                'deskripsi' => 'required|string',
                 'harga' => 'required|integer',
                 'rating_barang' => 'numeric',
                 'category_id' => 'required|in:1,2',
@@ -127,7 +127,7 @@ class BarangController extends Controller
             $imagePath = $request->file('image_barang')->store('public/images');
             $barang = new Barang();
             $barang->nama_barang = $validatedData['nama_barang'];
-            $barang->deskrpsi = $validatedData['deskrpsi'];
+            $barang->deskripsi = $validatedData['deskripsi'];
             $barang->harga = $validatedData['harga'];
             $barang->rating_barang = $validatedData['rating_barang'] ?? null;
             $barang->category_id = $validatedData['category_id'];
