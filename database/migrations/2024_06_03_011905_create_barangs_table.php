@@ -16,8 +16,8 @@ return new class extends Migration
             $table->string('nama_barang');
             $table->text('deskripsi');
             $table->integer('harga');
-            $table->double('rating_barang') ;
-            $table->foreignId('category_id')->nullable();
+            $table->double('rating_barang')->nullable();
+            $table->foreignId('category_id');
             $table->foreignId('mitra_id')->constrained('mitras')->onDelete('cascade');
             $table->string('image_barang');
             $table->timestamps();
