@@ -14,27 +14,36 @@ class LikeController extends Controller
         return response()->json($likes, 200);
     }
 
-    public function store(Request $request)
+    public function favorite(Request $request)
     {
         $request->validate([
             'barang_id' => 'required|exists:barangs,id',
         ]);
 
-        $like = Like::firstOrCreate(
-            [
-                'user_id' => Auth::user(),
-                'barang_id' => $request->barang_id,
-            ]
-        );
+        $userId = Auth::user()->id;
+
+        $like = Like::firstOrCreate([
+            'user_id' => $userId,
+            'barang_id' => $request->barang_id,
+        ]);
 
         $like->load('barang');
 
         return response()->json(['message' => 'Product liked', 'like' => $like], 201);
     }
 
-    public function destroy($barang_id)
+    public function unfavorite(Request $request, $barang_id)
     {
-        $like = Like::where('user_id', Auth::user())->where('barang_id', $barang_id)->first();
+        $request->validate([
+            'barang_id' => 'required|exists:barangs,id',
+        ]);
+
+        $userId = Auth::user()->id;
+
+        $like = Like::where('user_id', $userId)
+            ->where('barang_id', $barang_id)
+            ->first();
+
         if (!$like) {
             return response()->json(['message' => 'Like not found'], 404);
         }
