@@ -43,7 +43,6 @@ class LikeController extends Controller
         return response()->json(['message' => 'Product liked', 'like' => $like], 201);
     }
 
-    // Unfavorite a product
     public function unfavorite(Request $request, $barang_id)
     {
         $user = Auth::user();

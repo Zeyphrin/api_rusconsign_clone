@@ -62,7 +62,6 @@ Route::group([
     Route::get('likes', [LikeController::class, 'index']);
     Route::post('likes', [LikeController::class, 'favorite']);
     Route::delete('/likes/{barang_id}', [LikeController::class, 'unfavorite']);
-    Route::get('/barangs/filter', [BarangController::class, 'filterProductsByCategory']);
 }
 );
 
@@ -73,6 +72,7 @@ Route::get('/barang/{id}', [BarangController::class, 'show']);
 Route::post('tambahjasa', [ProfileController::class, 'tambahjasa']);
 Route::post( 'tambahproduct', [ProfileController::class, 'tambahproduct']);
 Route::post('add-category', [\App\Http\Controllers\CategoryController::class, 'addCategory']);
+Route::get('/barangs/filter', [BarangController::class, 'filterProductsByCategory']);
 
 Route::get("index",[AuthController::class,"index"]);
 

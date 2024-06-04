@@ -42,7 +42,8 @@ class CartController extends Controller
             'quantity' => 'required|integer|min:1',
         ]);
 
-        $cartItem = Cart::where('user_id', Auth::id())->where('id', $id)->first();
+        $cartItem = Cart::where('user_id', Auth::id())->where('carts_id', $id)->first();
+
         if (!$cartItem) {
             return response()->json(['message' => 'Cart item not found'], 404);
         }
@@ -55,7 +56,7 @@ class CartController extends Controller
 
     public function destroy($id)
     {
-        $cartItem = Cart::where('user_id', Auth::id())->where('id', $id)->first();
+        $cartItem = Cart::where('user_id', Auth::id())->where('carts_id', $id)->first();
         if (!$cartItem) {
             return response()->json(['message' => 'Cart item not found'], 404);
         }
