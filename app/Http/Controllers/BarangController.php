@@ -129,7 +129,7 @@ class BarangController extends Controller
             $barang->nama_barang = $validatedData['nama_barang'];
             $barang->deskripsi = $validatedData['deskripsi'];
             $barang->harga = $validatedData['harga'];
-            $barang->rating_barang = $validatedData['rating_barang'] ?? null;
+            $barang->rating_barang = $validatedData['rating_barang'] ?? 0;
             $barang->category_id = $validatedData['category_id'];
             $barang->image_barang = $imageProductPath;
             $barang->mitra_id = $mitraId;
@@ -248,11 +248,6 @@ class BarangController extends Controller
         $user = Auth::user();
         if (!$user) {
             return response()->json(['message' => 'Unauthenticated'], 401);
-        }
-
-        $mitra = Mitra::find($mitra_id);
-        if (!$mitra) {
-            return response()->json(['message' => 'Mitra tidak ditemukan'], 404);
         }
 
         $barangs = Barang::where('mitra_id', $mitra_id)->with('category:id,name')->get();
