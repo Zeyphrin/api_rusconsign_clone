@@ -72,7 +72,7 @@ Route::get('/barang/{id}', [BarangController::class, 'show']);
 Route::post('tambahjasa', [ProfileController::class, 'tambahjasa']);
 Route::post( 'tambahproduct', [ProfileController::class, 'tambahproduct']);
 Route::post('add-category', [\App\Http\Controllers\CategoryController::class, 'addCategory']);
-Route::get('/barangs/filter', [BarangController::class, 'filterProductsByCategory']);
+Route::get('/barang/filter', [BarangController::class, 'filterProductsByCategory']);
 
 Route::get("index",[AuthController::class,"index"]);
 
