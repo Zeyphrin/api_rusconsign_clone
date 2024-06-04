@@ -55,7 +55,7 @@ Route::group([
     Route::post('/mitra/add-barang', [\App\Http\Controllers\BarangController::class, 'addBarang']);
     Route::post('/mitra/edit-barang/{id}', [\App\Http\Controllers\BarangController::class, 'editBarang']);
     Route::delete('/mitra/delete-barang/{id}', [\App\Http\Controllers\BarangController::class, 'deleteBarang']);
-    Route::get('/{mitra_id}', [BarangController::class, 'getBarangsByMitraId']);
+    Route::get('mitra/{mitra_id}', [BarangController::class, 'getBarangsByMitraId']);
 
 
     // Like routes
