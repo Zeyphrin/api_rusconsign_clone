@@ -68,6 +68,9 @@ Route::group([
 Route::get('dataprofile', [ProfileController::class, 'dataprofile']);
 Route::get('barang', [\App\Http\Controllers\BarangController::class, 'index']);
 Route::get('/barang/{id}', [BarangController::class, 'show']);
+Route::put('publish/{id}', [BarangController::class, 'publish']);
+Route::put('unpublish/{id}', [BarangController::class, 'unpublish']);
+
 
 Route::post('tambahjasa', [ProfileController::class, 'tambahjasa']);
 Route::post( 'tambahproduct', [ProfileController::class, 'tambahproduct']);

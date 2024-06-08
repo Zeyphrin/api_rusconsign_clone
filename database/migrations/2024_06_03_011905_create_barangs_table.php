@@ -19,6 +19,7 @@ return new class extends Migration
             $table->double('rating_barang')->nullable()->default(0.0);
             $table->foreignId('category_id');
             $table->foreignId('mitra_id')->constrained('mitras')->onDelete('cascade');
+            $table->string('status_post');
             $table->string('image_barang');
             $table->timestamps();
         });

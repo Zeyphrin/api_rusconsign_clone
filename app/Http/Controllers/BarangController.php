@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\BarangResource;
+use App\Http\Resources\MitraResource;
 use App\Models\Barang;
 use App\Models\Category;
 use App\Models\Mitra;
@@ -80,6 +82,7 @@ class BarangController extends Controller
                 'category_id' => $barang->category->id,
                 'category_nama' => $barang->category->name,
                 'image_barang' => $barang->image_barang,
+                'status' => $barang->status_post,
                 'created_at' => $barang->created_at,
                 'updated_at' => $barang->updated_at,
                 'mitra' => [
@@ -116,6 +119,7 @@ class BarangController extends Controller
             'category_id' => $barang->category->id,
             'category_nama' => $barang->category->name,
             'image_barang' => $barang->image_barang,
+            'status' => $barang->status_post,
             'created_at' => $barang->created_at,
             'updated_at' => $barang->updated_at,
             'mitra' => [
@@ -183,6 +187,7 @@ class BarangController extends Controller
             $barang->category_id = $validatedData['category_id'];
             $barang->image_barang = $imageProductPath;
             $barang->mitra_id = $mitraId;
+            $barang->status_post = $validatedData->status_post ?? 'pending';
             $barang->save();
 
             // Retrieve the category
@@ -328,4 +333,35 @@ class BarangController extends Controller
         ], 200);
     }
 
+    public function publish(Request $request, $id)
+    {
+        $barang = Barang::find($id);
+        if (!$barang) {
+            return response()->json(['message' => 'Barang not found'], 404);
+        }
+
+        $barang->status_post = 'publish';
+        if ($barang->save()) {
+            return new BarangResource($barang);
+        } else {
+            return response()->json(['message' => 'Failed to reject admin'], 500);
+        }
+    }
+
+    public function unpublish(Request $request, $id)
+    {
+        $barang = Barang::find($id);
+        if (!$barang) {
+            return response()->json(['message' => 'Barang not found'], 404);
+        }
+
+        // Change status to "rejected"
+        $barang->status_post = 'unpublish';
+        if ($barang->save()) {
+            return new BarangResource($barang);
+        } else {
+            return response()->json(['message' => 'Failed to reject admin'], 500);
+        }
+
+    }
 }
