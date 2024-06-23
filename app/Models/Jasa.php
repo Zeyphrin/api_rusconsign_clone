@@ -13,6 +13,6 @@ class Jasa extends Model
 
     public function mitra()
     {
-        return $this->belongsTo(Mitra::class, 'mitra_id'); // 'mitraId' should match the foreign key column name in your database
+        return $this->belongsTo(Mitra::class, 'mitra_id');
     }
 }

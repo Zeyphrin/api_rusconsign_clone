@@ -7,13 +7,13 @@ use Illuminate\Http\Request;
 
 class AdminController extends Controller
 {
-    
+
     public function index()
     {
-        $mitras = Mitra::all(); // Mengambil semua data mitra dari database
+        $mitras = Mitra::all();
         return view('/admin', [
             "title" => "admin",
-            "mitras" => $mitras // Menambahkan data mitra ke dalam array yang dilewatkan ke view
+            "mitras" => $mitras
         ]);
     }
 }

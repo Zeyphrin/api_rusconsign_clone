@@ -53,7 +53,7 @@ Route::group([
     Route::post('edit-profile', [ProfileController::class, 'editProfile']);
 
     Route::post('/mitra/add-barang', [\App\Http\Controllers\BarangController::class, 'addBarang']);
-    Route::post('/mitra/edit-barang/{id}', [\App\Http\Controllers\BarangController::class, 'editBarang']);
+    Route::put('/mitra/edit-barang/{id}', [\App\Http\Controllers\BarangController::class, 'editBarang']);
     Route::delete('/mitra/delete-barang/{id}', [\App\Http\Controllers\BarangController::class, 'deleteBarang']);
     Route::get('mitra/{mitra_id}', [BarangController::class, 'getBarangsByMitraId']);
 

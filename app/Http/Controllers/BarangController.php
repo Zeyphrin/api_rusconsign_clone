@@ -15,6 +15,57 @@ use Illuminate\Support\Facades\Storage;
 class BarangController extends Controller
 {
 
+    public function getAcceptedBarangs()
+    {
+        // Get the authenticated user
+        $user = Auth::user();
+        if (!$user) {
+            return response()->json(['message' => 'Unauthenticated'], 401);
+        }
+
+        // Retrieve barangs with status 'accepted'
+        $barangs = Barang::where('status_post', 'accepted')
+            ->with('category:id,name', 'mitra:id,nama_lengkap,jumlah_product,jumlah_jasa,pengikut,penilaian')
+            ->get();
+
+        // Check if barangs are found
+        if ($barangs->isEmpty()) {
+            return response()->json(['message' => 'Tidak ada barang yang diterima ditemukan'], 404);
+        }
+
+        // Prepare the data for response
+        $barangData = [];
+        foreach ($barangs as $barang) {
+            $barangData[] = [
+                'id' => $barang->id,
+                'nama_barang' => $barang->nama_barang,
+                'deskripsi' => $barang->deskripsi,
+                'harga' => $barang->harga,
+                'rating_barang' => $barang->rating_barang,
+                'category_id' => $barang->category->id,
+                'category_nama' => $barang->category->name,
+                'image_barang' => $barang->image_barang,
+                'status' => $barang->status_post,
+                'created_at' => $barang->created_at,
+                'updated_at' => $barang->updated_at,
+                'mitra' => [
+                    'id' => $barang->mitra->id,
+                    'nama_lengkap' => $barang->mitra->nama_lengkap,
+                    'jumlah_product' => $barang->mitra->jumlah_product,
+                    'jumlah_jasa' => $barang->mitra->jumlah_jasa,
+                    'pengikut' => $barang->mitra->pengikut,
+                    'penilaian' => $barang->mitra->penilaian,
+                ],
+            ];
+        }
+
+        // Return the response
+        return response()->json([
+            'message' => 'Data barang yang diterima berhasil ditemukan',
+            'barangs' => $barangData,
+        ], 200);
+    }
+
     public function filterProductsByCategory(Request $request)
     {
         $request->validate([
@@ -233,21 +284,40 @@ class BarangController extends Controller
             return response()->json(['message' => 'Barang tidak ditemukan'], 404);
         }
 
-
         $validatedData = $request->validate([
-            'nama_barang' => 'required|string|max:255',
-            'deskripsi' => 'required|string',
-            'harga' => 'required|integer',
-            'rating_barang' => 'numeric',
-            'category_id' => 'required|in:1,2',
-            'image_barang' => 'required|image',
+            'nama_barang' => 'sometimes|string|max:255',
+            'deskripsi' => 'sometimes|string',
+            'harga' => 'sometimes|integer',
+            'rating_barang' => 'sometimes|numeric',
+            'category_id' => 'sometimes|in:1,2',
+            'image_barang' => 'sometimes|image',
         ]);
 
-        $barang->nama_barang = $validatedData['nama_barang'];
-        $barang->deskripsi = $validatedData['deskripsi'];
-        $barang->harga = $validatedData['harga'];
-        $barang->rating_barang = $validatedData['rating_barang'];
-        $barang->category_id = $validatedData['category_id'];
+        if (isset($validatedData['nama_barang'])) {
+            $barang->nama_barang = $validatedData['nama_barang'];
+        }
+
+        if (isset($validatedData['deskripsi'])) {
+            $barang->deskripsi = $validatedData['deskripsi'];
+        }
+
+        if (isset($validatedData['harga'])) {
+            $barang->harga = $validatedData['harga'];
+        }
+
+        if (isset($validatedData['rating_barang'])) {
+            $barang->rating_barang = $validatedData['rating_barang'];
+        }
+
+        if (isset($validatedData['category_id'])) {
+            $barang->category_id = $validatedData['category_id'];
+        }
+
+        // Jika ada image_barang, simpan file dan perbarui path-nya di database
+        if (isset($validatedData['image_barang'])) {
+            $imagePath = $request->file('image_barang')->store('images');
+            $barang->image_barang = $imagePath;
+        }
 
         $barang->save();
 
@@ -256,6 +326,7 @@ class BarangController extends Controller
             'barang' => $barang,
         ], 200);
     }
+
 
     public function deleteBarang(Request $request, $id)
     {
