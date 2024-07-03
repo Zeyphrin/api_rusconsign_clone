@@ -54,8 +54,8 @@ Route::group([
 
     // Like routes
     Route::get('likes', [LikeController::class, 'index']);
-    Route::post('likes', [LikeController::class, 'favorite']);
-    Route::delete('/likes/{barang_id}', [LikeController::class, 'unfavorite']);
+    Route::put('likes', [LikeController::class, 'favorite']);
+    Route::put('/likes/{barang_id}', [LikeController::class, 'unfavorite']);
 
     Route::post('/mitra/add-barang', [\App\Http\Controllers\BarangController::class, 'addBarang']);
     Route::put('/mitra/edit-barang/{id}', [\App\Http\Controllers\BarangController::class, 'editBarang']);
