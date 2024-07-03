@@ -52,24 +52,24 @@ Route::group([
     Route::get('allprofile', [ProfileController::class, 'allprofile']);
     Route::post('edit-profile', [ProfileController::class, 'editProfile']);
 
-    Route::post('/mitra/add-barang', [\App\Http\Controllers\BarangController::class, 'addBarang']);
-    Route::put('/mitra/edit-barang/{id}', [\App\Http\Controllers\BarangController::class, 'editBarang']);
-    Route::delete('/mitra/delete-barang/{id}', [\App\Http\Controllers\BarangController::class, 'deleteBarang']);
-    Route::get('mitra/{mitra_id}', [BarangController::class, 'getBarangsByMitraId']);
-
-
     // Like routes
     Route::get('likes', [LikeController::class, 'index']);
     Route::post('likes', [LikeController::class, 'favorite']);
     Route::delete('/likes/{barang_id}', [LikeController::class, 'unfavorite']);
+
+    Route::post('/mitra/add-barang', [\App\Http\Controllers\BarangController::class, 'addBarang']);
+    Route::put('/mitra/edit-barang/{id}', [\App\Http\Controllers\BarangController::class, 'editBarang']);
+    Route::delete('/mitra/delete-barang/{id}', [\App\Http\Controllers\BarangController::class, 'deleteBarang']);
+    Route::get('mitra/{mitra_id}', [BarangController::class, 'getBarangsByMitraId']);
 }
 );
 
-Route::get('dataprofile', [ProfileController::class, 'dataprofile']);
-Route::get('barang', [\App\Http\Controllers\BarangController::class, 'index']);
 Route::get('/barang/{id}', [BarangController::class, 'show']);
 Route::put('publish/{id}', [BarangController::class, 'publish']);
 Route::put('unpublish/{id}', [BarangController::class, 'unpublish']);
+
+Route::get('dataprofile', [ProfileController::class, 'dataprofile']);
+Route::get('barang', [\App\Http\Controllers\BarangController::class, 'index']);
 
 
 Route::post('tambahjasa', [ProfileController::class, 'tambahjasa']);

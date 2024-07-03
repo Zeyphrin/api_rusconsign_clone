@@ -16,10 +16,53 @@ class LikeController extends Controller
             return response()->json(['message' => 'Unauthenticated'], 401);
         }
 
-        $likes = Like::where('user_id', $user->id)->with('barang')->get();
+        $likes = Like::where('user_id', $user->id)
+            ->with('barang.category:id,name', 'barang.mitra:id,nama_lengkap,jumlah_product,jumlah_jasa,pengikut,penilaian')
+            ->get();
 
-        return response()->json($likes, 200);
+        if ($likes->isEmpty()) {
+            return response()->json(['message' => 'No likes found'], 404);
+        }
+
+        // Create an array to store like data with additional information
+        $likeData = [];
+        foreach ($likes as $like) {
+            $barang = $like->barang;
+            $likeData[] = [
+                'id' => $like->likeId,
+                'created_at' => $like->created_at,
+                'updated_at' => $like->updated_at,
+                'barang' => [
+                    'id' => $barang->id,
+                    'nama_barang' => $barang->nama_barang,
+                    'deskripsi' => $barang->deskripsi,
+                    'harga' => $barang->harga,
+                    'rating_barang' => $barang->rating_barang,
+                    'category_id' => $barang->category->id,
+                    'category_nama' => $barang->category->name,
+                    'image_barang' => $barang->image_barang,
+                    'status' => $barang->status_post,
+                    'created_at' => $barang->created_at,
+                    'updated_at' => $barang->updated_at,
+                    'mitra' => [
+                        'id' => $barang->mitra->id,
+                        'nama_toko' => $barang->mitra->nama_toko,
+                        'nama_lengkap' => $barang->mitra->nama_lengkap,
+                        'jumlah_product' => $barang->mitra->jumlah_product,
+                        'jumlah_jasa' => $barang->mitra->jumlah_jasa,
+                        'pengikut' => $barang->mitra->pengikut,
+                        'penilaian' => $barang->mitra->penilaian,
+                    ],
+                ],
+            ];
+        }
+
+        return response()->json([
+            'message' => 'Likes data found successfully',
+            'likes' => $likeData,
+        ], 200);
     }
+
 
     // Favorite a product
     public function favorite(Request $request)
