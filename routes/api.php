@@ -53,9 +53,9 @@ Route::group([
     Route::post('edit-profile', [ProfileController::class, 'editProfile']);
 
     // Like routes
-    Route::get('likes', [LikeController::class, 'index']);
-    Route::put('likes', [LikeController::class, 'favorite']);
-    Route::put('/likes/{barang_id}', [LikeController::class, 'unfavorite']);
+    Route::get('likes', [LikeController::class, 'index']); // Get all liked items for the authenticated user
+    Route::put('likes', [LikeController::class, 'favorite']); // Favorite a product
+    Route::delete('likes/{barang_id}', [LikeController::class, 'unfavorite']); // Unfavorite a product
 
     Route::post('/mitra/add-barang', [\App\Http\Controllers\BarangController::class, 'addBarang']);
     Route::put('/mitra/edit-barang/{id}', [\App\Http\Controllers\BarangController::class, 'editBarang']);

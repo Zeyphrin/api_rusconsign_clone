@@ -29,7 +29,7 @@ class LikeController extends Controller
         foreach ($likes as $like) {
             $barang = $like->barang;
             $likeData[] = [
-                'id' => $like->likeId,
+                'id' => $like->id,  // Adjusted to use correct like id field
                 'created_at' => $like->created_at,
                 'updated_at' => $like->updated_at,
                 'barang' => [
@@ -63,7 +63,6 @@ class LikeController extends Controller
         ], 200);
     }
 
-
     // Favorite a product
     public function favorite(Request $request)
     {
@@ -83,10 +82,11 @@ class LikeController extends Controller
 
         $like->load('barang');
 
-        return response()->json(['message' => 'Product liked', 'like' => $like], 201);
+        return response()->json(['message' => 'Product liked', 'like' => $like], 200);
     }
 
-    public function unfavorite(Request $request, $barang_id)
+    // Unfavorite a product
+    public function unfavorite($barang_id)
     {
         $user = Auth::user();
         if (!$user) {
@@ -101,7 +101,6 @@ class LikeController extends Controller
             return response()->json(['message' => 'Like not found'], 404);
         }
 
-        $like->load('barang');
         $like->delete();
 
         return response()->json(['message' => 'Like removed'], 200);
