@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Barang;
 use App\Models\Cart;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -21,6 +22,9 @@ class CartController extends Controller
             'quantity' => 'required|integer|min:1',
         ]);
 
+        $barang = Barang::find($request->barang_id);
+        $totalPrice = $barang->harga * $request->quantity;
+
         $cartItem = Cart::updateOrCreate(
             [
                 'user_id' => Auth::id(),
@@ -28,6 +32,7 @@ class CartController extends Controller
             ],
             [
                 'quantity' => $request->quantity,
+                'total_price' => $totalPrice,
             ]
         );
 
@@ -48,8 +53,14 @@ class CartController extends Controller
             return response()->json(['message' => 'Cart item not found'], 404);
         }
 
+        $barang = Barang::find($cartItem->barang_id);
+        $totalPrice = $barang->harga * $request->quantity;
+
         $cartItem->quantity = $request->quantity;
+        $cartItem->total_price = $totalPrice;
         $cartItem->save();
+
+        $cartItem->load('barang');
 
         return response()->json(['message' => 'Cart item updated', 'cartItem' => $cartItem], 200);
     }

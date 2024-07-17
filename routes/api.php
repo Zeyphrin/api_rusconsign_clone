@@ -43,10 +43,10 @@ Route::group([
     Route::post('tambahpengikut', [ProfileController::class, 'tambahpengikut']);
     Route::get('/test',[ProductController::class,'test']);
 
-    Route::get('cart', [CartController::class, 'index']);
-    Route::post('add-cart', [CartController::class, 'store']);
-    Route::put('cart/{id}', [CartController::class, 'update']);
-    Route::delete('cart/{id}', [CartController::class, 'destroy']);
+    Route::get('/cart', [CartController::class, 'index']);
+    Route::post('/cart', [CartController::class, 'store']);
+    Route::put('/cart/{id}', [CartController::class, 'update']);
+    Route::delete('/cart/{id}', [CartController::class, 'destroy']);
 
 
     Route::get('allprofile', [ProfileController::class, 'allprofile']);
@@ -67,6 +67,7 @@ Route::group([
 Route::get('/barang/{id}', [BarangController::class, 'show']);
 Route::put('publish/{id}', [BarangController::class, 'publish']);
 Route::put('unpublish/{id}', [BarangController::class, 'unpublish']);
+Route::get('/accepted-barangs', [BarangController::class, 'getAcceptedBarangs']);
 
 Route::get('dataprofile', [ProfileController::class, 'dataprofile']);
 Route::get('barang', [\App\Http\Controllers\BarangController::class, 'index']);

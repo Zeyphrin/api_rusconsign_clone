@@ -15,56 +15,57 @@ use Illuminate\Support\Facades\Storage;
 class BarangController extends Controller
 {
 
-    public function getAcceptedBarangs()
-    {
-        // Get the authenticated user
-        $user = Auth::user();
-        if (!$user) {
-            return response()->json(['message' => 'Unauthenticated'], 401);
-        }
+public function getAcceptedBarangs(Request $request)
+{
+    // Get the authenticated user
 
-        // Retrieve barangs with status 'accepted'
-        $barangs = Barang::where('status_post', 'accepted')
-            ->with('category:id,name', 'mitra:id,nama_lengkap,jumlah_product,jumlah_jasa,pengikut,penilaian')
-            ->get();
 
-        // Check if barangs are found
-        if ($barangs->isEmpty()) {
-            return response()->json(['message' => 'Tidak ada barang yang diterima ditemukan'], 404);
-        }
+    $categoryId = $request->query('category_id');
 
-        // Prepare the data for response
-        $barangData = [];
-        foreach ($barangs as $barang) {
-            $barangData[] = [
-                'id' => $barang->id,
-                'nama_barang' => $barang->nama_barang,
-                'deskripsi' => $barang->deskripsi,
-                'harga' => $barang->harga,
-                'rating_barang' => $barang->rating_barang,
-                'category_id' => $barang->category->id,
-                'category_nama' => $barang->category->name,
-                'image_barang' => $barang->image_barang,
-                'status' => $barang->status_post,
-                'created_at' => $barang->created_at,
-                'updated_at' => $barang->updated_at,
-                'mitra' => [
-                    'id' => $barang->mitra->id,
-                    'nama_lengkap' => $barang->mitra->nama_lengkap,
-                    'jumlah_product' => $barang->mitra->jumlah_product,
-                    'jumlah_jasa' => $barang->mitra->jumlah_jasa,
-                    'pengikut' => $barang->mitra->pengikut,
-                    'penilaian' => $barang->mitra->penilaian,
-                ],
-            ];
-        }
+    $query = Barang::where('status_post', 'publish')
+        ->with('category:id,name', 'mitra:id,nama_lengkap,jumlah_product,jumlah_jasa,pengikut,penilaian');
 
-        // Return the response
-        return response()->json([
-            'message' => 'Data barang yang diterima berhasil ditemukan',
-            'barangs' => $barangData,
-        ], 200);
+    if ($categoryId) {
+        $query->where('category_id', $categoryId);
     }
+
+    $barangs = $query->get();
+
+    if ($barangs->isEmpty()) {
+        return response()->json(['message' => 'Tidak ada barang yang diterima ditemukan'], 404);
+    }
+
+    $barangData = [];
+    foreach ($barangs as $barang) {
+        $barangData[] = [
+            'id' => $barang->id,
+            'nama_barang' => $barang->nama_barang,
+            'deskripsi' => $barang->deskripsi,
+            'harga' => $barang->harga,
+            'rating_barang' => $barang->rating_barang,
+            'category_id' => $barang->category->id,
+            'category_nama' => $barang->category->name,
+            'image_barang' => $barang->image_barang,
+            'status' => $barang->status_post,
+            'created_at' => $barang->created_at,
+            'updated_at' => $barang->updated_at,
+            'mitra' => [
+                'id' => $barang->mitra->id,
+                'nama_lengkap' => $barang->mitra->nama_lengkap,
+                'jumlah_product' => $barang->mitra->jumlah_product,
+                'jumlah_jasa' => $barang->mitra->jumlah_jasa,
+                'pengikut' => $barang->mitra->pengikut,
+                'penilaian' => $barang->mitra->penilaian,
+            ],
+        ];
+    }
+
+    return response()->json([
+        'message' => 'Data barang yang diterima berhasil ditemukan',
+        'barangs' => $barangData,
+    ], 200);
+}
+
 
     public function filterProductsByCategory(Request $request)
     {

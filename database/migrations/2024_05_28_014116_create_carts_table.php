@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignid('barang_id');
             $table->foreignid('user_id');
             $table->integer('quantity')->default(1);
+            $table->decimal('total_price', 10, 2);
             $table->timestamps();
         });
     }
