@@ -15,10 +15,66 @@ use Illuminate\Support\Facades\Storage;
 class BarangController extends Controller
 {
 
-public function getAcceptedBarangs(Request $request)
-{
-    // Get the authenticated user
+    public function searchAcceptedBarangs(Request $request)
+    {
+        $searchTerm = $request->query('q');
 
+        if (!$searchTerm) {
+            return response()->json(['message' => 'Kata kunci pencarian harus diberikan'], 400);
+        }
+
+        $categoryId = $request->query('category_id');
+
+        $query = Barang::where('status_post', 'publish')
+            ->with('category:id,name', 'mitra:id,nama_lengkap,jumlah_product,jumlah_jasa,pengikut,penilaian')
+            ->where(function ($query) use ($searchTerm) {
+                $query->where('nama_barang', 'LIKE', "%{$searchTerm}%")
+                    ->orWhere('deskripsi', 'LIKE', "%{$searchTerm}%");
+            });
+
+        if ($categoryId) {
+            $query->where('category_id', $categoryId);
+        }
+
+        $barangs = $query->get();
+
+        if ($barangs->isEmpty()) {
+            return response()->json(['message' => 'Tidak ada barang yang ditemukan dengan kata kunci ini'], 404);
+        }
+
+        $barangData = [];
+        foreach ($barangs as $barang) {
+            $barangData[] = [
+                'id' => $barang->id,
+                'nama_barang' => $barang->nama_barang,
+                'deskripsi' => $barang->deskripsi,
+                'harga' => $barang->harga,
+                'rating_barang' => $barang->rating_barang,
+                'category_id' => $barang->category->id,
+                'category_nama' => $barang->category->name,
+                'image_barang' => $barang->image_barang,
+                'status' => $barang->status_post,
+                'created_at' => $barang->created_at,
+                'updated_at' => $barang->updated_at,
+                'mitra' => [
+                    'id' => $barang->mitra->id,
+                    'nama_lengkap' => $barang->mitra->nama_lengkap,
+                    'jumlah_product' => $barang->mitra->jumlah_product,
+                    'jumlah_jasa' => $barang->mitra->jumlah_jasa,
+                    'pengikut' => $barang->mitra->pengikut,
+                    'penilaian' => $barang->mitra->penilaian,
+                ],
+            ];
+        }
+
+        return response()->json([
+            'message' => 'Barang yang diterima ditemukan dengan kata kunci pencarian',
+            'barangs' => $barangData,
+        ], 200);
+    }
+
+    public function getAcceptedBarangs(Request $request)
+{
 
     $categoryId = $request->query('category_id');
 

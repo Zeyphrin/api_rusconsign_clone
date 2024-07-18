@@ -68,6 +68,7 @@ Route::get('/barang/{id}', [BarangController::class, 'show']);
 Route::put('publish/{id}', [BarangController::class, 'publish']);
 Route::put('unpublish/{id}', [BarangController::class, 'unpublish']);
 Route::get('/accepted-barangs', [BarangController::class, 'getAcceptedBarangs']);
+Route::get('/barangs/search', [BarangController::class, 'searchAcceptedBarangs']);
 
 Route::get('dataprofile', [ProfileController::class, 'dataprofile']);
 Route::get('barang', [\App\Http\Controllers\BarangController::class, 'index']);
