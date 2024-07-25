@@ -58,6 +58,7 @@ class BarangController extends Controller
                 'updated_at' => $barang->updated_at,
                 'mitra' => [
                     'id' => $barang->mitra->id,
+                    'nama_toko'=>$barang->mitra->nama_toko,
                     'nama_lengkap' => $barang->mitra->nama_lengkap,
                     'jumlah_product' => $barang->mitra->jumlah_product,
                     'jumlah_jasa' => $barang->mitra->jumlah_jasa,
@@ -107,6 +108,7 @@ class BarangController extends Controller
             'updated_at' => $barang->updated_at,
             'mitra' => [
                 'id' => $barang->mitra->id,
+                'nama_toko'=>$barang->mitra->nama_toko,
                 'nama_lengkap' => $barang->mitra->nama_lengkap,
                 'jumlah_product' => $barang->mitra->jumlah_product,
                 'jumlah_jasa' => $barang->mitra->jumlah_jasa,
@@ -155,6 +157,7 @@ class BarangController extends Controller
                 'updated_at' => $barang->updated_at,
                 'mitra' => [
                     'id' => $barang->mitra->id,
+                    'nama_toko'=>$barang->mitra->nama_toko,
                     'nama_lengkap' => $barang->mitra->nama_lengkap,
                     'jumlah_product' => $barang->mitra->jumlah_product,
                     'jumlah_jasa' => $barang->mitra->jumlah_jasa,
@@ -172,13 +175,12 @@ class BarangController extends Controller
     }
     public function index()
     {
-        $barangs = Barang::with('category:id,name', 'mitra:id,nama_lengkap,jumlah_product,jumlah_jasa,pengikut,penilaian')->get();
+        $barangs = Barang::with('category:id,name', 'mitra:id,nama_lengkap,nama_toko,jumlah_product,jumlah_jasa,pengikut,penilaian')->get();
 
         if ($barangs->isEmpty()) {
             return response()->json(['message' => 'Tidak ada barang yang ditemukan'], 404);
         }
 
-        // Buat array untuk menyimpan data barang beserta informasi tambahan dari mitra
         $barangData = [];
         foreach ($barangs as $barang) {
             $barangData[] = [
@@ -195,7 +197,7 @@ class BarangController extends Controller
                 'updated_at' => $barang->updated_at,
                 'mitra' => [
                     'id' => $barang->mitra->id,
-                    'nama_toko' => $barang->mitra->nama_toko,
+                    'nama_toko' => $barang->mitra->nama_toko ?? 'nama toko tidak tersedia',
                     'nama_lengkap' => $barang->mitra->nama_lengkap,
                     'jumlah_product' => $barang->mitra->jumlah_product,
                     'jumlah_jasa' => $barang->mitra->jumlah_jasa,

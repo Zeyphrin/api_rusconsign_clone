@@ -11,6 +11,7 @@ use App\Http\Controllers\JasaController;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\MitraController;
 use App\Http\Controllers\OTPController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Http\Request;
@@ -61,6 +62,8 @@ Route::group([
     Route::put('/mitra/edit-barang/{id}', [\App\Http\Controllers\BarangController::class, 'editBarang']);
     Route::delete('/mitra/delete-barang/{id}', [\App\Http\Controllers\BarangController::class, 'deleteBarang']);
     Route::get('mitra/{mitra_id}', [BarangController::class, 'getBarangsByMitraId']);
+
+    Route::post('/create-invoice', [PaymentController::class, 'createInvoice']);
 }
 );
 
