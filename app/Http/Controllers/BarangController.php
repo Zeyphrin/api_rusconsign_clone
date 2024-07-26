@@ -23,7 +23,7 @@ class BarangController extends Controller
             return response()->json(['message' => 'Kata kunci pencarian harus diberikan'], 400);
         }
 
-        $categoryId = $request->query('category_id');
+        $categoryId = $request-> query('category_id');
 
         $query = Barang::where('status_post', 'publish')
             ->with('category:id,name', 'mitra:id,nama_lengkap,jumlah_product,jumlah_jasa,pengikut,penilaian')
@@ -134,7 +134,7 @@ class BarangController extends Controller
         $categoryId = $request->input('category_id');
 
         $barangs = Barang::where('category_id', $categoryId)
-            ->with('category:id,name', 'mitra:id,nama_lengkap,jumlah_product,jumlah_jasa,pengikut,penilaian')
+            ->with('category:id,name', 'mitra:id,nama_lengkap,nama_toko,jumlah_product,jumlah_jasa,pengikut,penilaian')
             ->get();
 
         if ($barangs->isEmpty()) {
@@ -215,7 +215,7 @@ class BarangController extends Controller
 
     public function show($id)
     {
-        $barang = Barang::with('category:id,name', 'mitra:id,nama_lengkap,jumlah_product,jumlah_jasa,pengikut,penilaian')->find($id);
+        $barang = Barang::with('category:id,name', 'mitra:id,nama_lengkap,nama_toko,jumlah_product,jumlah_jasa,pengikut,penilaian')->find($id);
 
         if (!$barang) {
             return response()->json(['message' => 'Barang tidak ditemukan'], 404);
