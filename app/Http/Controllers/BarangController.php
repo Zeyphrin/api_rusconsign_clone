@@ -277,7 +277,7 @@ class BarangController extends Controller
             $imageName = $mitraId . '_' . time() . '_' . $image->getClientOriginalName();
             $imagePath = $image->storeAs('public/product_images', $imageName);
 
-            $imageProductPath = '/api/storage/' . $imagePath;
+            $imageProductPath = 'https://rusconsign/api/storage/' . $imagePath;
         } else {
             return response()->json(['message' => 'Image upload failed'], 400);
         }
