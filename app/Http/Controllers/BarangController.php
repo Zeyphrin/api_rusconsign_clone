@@ -251,79 +251,87 @@ class BarangController extends Controller
     }
 
     public function addBarang(Request $request)
-    {
-        $validatedData = $request->validate([
-            'nama_barang' => 'required|string|max:255',
-            'deskripsi' => 'required|string',
-            'harga' => 'required|integer',
-            'rating_barang' => 'numeric|nullable',
-            'category_id' => 'required|in:1,2',
-            'image_barang' => 'required|image',
-        ]);
+        {
+            $validatedData = $request->validate([
+                'nama_barang' => 'required|string|max:255',
+                'deskripsi' => 'required|string',
+                'harga' => 'required|integer',
+                'rating_barang' => 'numeric',
+                'category_id' => 'required|in:1,2',
+                'image_barang' => 'required|image',
+            ]);
 
-        $user = Auth::user();
-        if (!$user) {
-            return response()->json(['message' => 'Unauthenticated'], 401);
-        }
+            $user = Auth::user();
+            if (!$user) {
+                return response()->json(['message' => 'Unauthenticated'], 401);
+            }
 
-        $profileImage = $user->profileImages()->first();
-        if (!$profileImage) {
-            return response()->json(['message' => 'Profile image not found'], 404);
-        }
+            $profileImage = $user->profileImages()->first();
+            if (!$profileImage) {
+                return response()->json(['message' => 'Profile image not found'], 404);
+            }
 
-        if ($request->hasFile('image_barang')) {
-            $image = $request->file('image_barang');
+            if ($request->hasFile('image_barang')) {
+                $image = $request->file('image_barang');
+
+                $imageName = $image->getClientOriginalName();
+                $mitraId = $request->input('mitra_id');
+                $imagePath = "product_images/{$mitraId}_{$imageName}";
+
+                $imagePath = $image->storeAs('product_images', $imageName);
+
+                $imageProductPath = Storage::url($imagePath);
+            }
+
+
             $mitraId = $profileImage->mitra_id;
-            $imageName = $mitraId . '_' . time() . '_' . $image->getClientOriginalName();
-            $imagePath = $image->storeAs('public/product_images', $imageName);
+            $mitra = Mitra::find($mitraId);
+            if (!$mitra) {
+                return response()->json(['message' => 'Mitra not found'], 404);
+            }
 
-            $imageProductPath = 'https://rusconsign/api/storage/' . $imagePath;
-        } else {
-            return response()->json(['message' => 'Image upload failed'], 400);
+            $imagePath = $request->file('image_barang')->store('public/images');
+            $barang = new Barang();
+            $barang->nama_barang = $validatedData['nama_barang'];
+            $barang->deskripsi = $validatedData['deskripsi'];
+            $barang->harga = $validatedData['harga'];
+            $barang->rating_barang = $validatedData['rating_barang'] ?? 0.0;
+            $barang->category_id = $validatedData['category_id'];
+            $barang->image_barang = $imageProductPath;
+            $barang->mitra_id = $mitraId;
+            $barang->status_post = $validatedData->status_post ?? 'pending';
+            $barang->save();
+
+            // Retrieve the category
+            $category = Category::find($validatedData['category_id']);
+            if (!$category) {
+                return response()->json(['message' => 'Category not found'], 404);
+            }
+
+            $categoryName = $category->name;
+
+            $categoryType = $validatedData['category_id'] == 1 ? 'product' : 'jasa';
+            $mitra->{"jumlah_$categoryType"} += 1;
+            $mitra->save();
+
+            $mitraData = [
+                'id' => $mitra->id,
+                'name' => $mitra->nama_lengkap,
+                'jumlah_product' => $mitra->jumlah_product,
+                'jumlah_jasa' => $mitra->jumlah_jasa,
+                'pengikut' =>$mitra->pengikut,
+                'penilaian' => $mitra->penilaian,
+            ];
+
+
+
+            return response()->json([
+                'message' => 'Produk berhasil ditambahkan',
+                'product' => $barang,
+                'mitra' => $mitraData,
+                'category_name' => $categoryName,
+            ], 201);
         }
-
-        $mitra = Mitra::find($mitraId);
-        if (!$mitra) {
-            return response()->json(['message' => 'Mitra not found'], 404);
-        }
-
-        $barang = new Barang();
-        $barang->nama_barang = $validatedData['nama_barang'];
-        $barang->deskripsi = $validatedData['deskripsi'];
-        $barang->harga = $validatedData['harga'];
-        $barang->rating_barang = $validatedData['rating_barang'] ?? 0.0;
-        $barang->category_id = $validatedData['category_id'];
-        $barang->image_barang = $imageProductPath;
-        $barang->mitra_id = $mitraId;
-        $barang->status_post = $validatedData['status_post'] ?? 'pending';
-        $barang->save();
-
-        $category = Category::find($validatedData['category_id']);
-        if (!$category) {
-            return response()->json(['message' => 'Category not found'], 404);
-        }
-
-        $categoryName = $category->name;
-        $categoryType = $validatedData['category_id'] == 1 ? 'jumlah_product' : 'jumlah_jasa';
-        $mitra->$categoryType += 1;
-        $mitra->save();
-
-        $mitraData = [
-            'id' => $mitra->id,
-            'name' => $mitra->nama_lengkap,
-            'jumlah_product' => $mitra->jumlah_product,
-            'jumlah_jasa' => $mitra->jumlah_jasa,
-            'pengikut' => $mitra->pengikut,
-            'penilaian' => $mitra->penilaian,
-        ];
-
-        return response()->json([
-            'message' => 'Produk berhasil ditambahkan',
-            'product' => $barang,
-            'mitra' => $mitraData,
-            'category_name' => $categoryName,
-        ], 201);
-    }
 
     public function editBarang(Request $request, $id)
     {
