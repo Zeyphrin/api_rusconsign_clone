@@ -10,6 +10,7 @@ use App\Models\Mitra;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class BarangController extends Controller
@@ -141,7 +142,6 @@ class BarangController extends Controller
             return response()->json(['message' => 'Tidak ada barang yang ditemukan untuk kategori ini'], 404);
         }
 
-        // Prepare the data for response
         $barangData = [];
         foreach ($barangs as $barang) {
             $barangData[] = [
@@ -251,140 +251,134 @@ class BarangController extends Controller
     }
 
     public function addBarang(Request $request)
-        {
-            $validatedData = $request->validate([
-                'nama_barang' => 'required|string|max:255',
-                'deskripsi' => 'required|string',
-                'harga' => 'required|integer',
-                'rating_barang' => 'numeric',
-                'category_id' => 'required|in:1,2',
-                'image_barang' => 'required|image',
-            ]);
-
-            $user = Auth::user();
-            if (!$user) {
-                return response()->json(['message' => 'Unauthenticated'], 401);
-            }
-
-            $profileImage = $user->profileImages()->first();
-            if (!$profileImage) {
-                return response()->json(['message' => 'Profile image not found'], 404);
-            }
-
-            if ($request->hasFile('image_barang')) {
-                $image = $request->file('image_barang');
-
-                $imageName = $image->getClientOriginalName();
-                $mitraId = $request->input('mitra_id');
-                $imagePath = "product_images/{$mitraId}_{$imageName}";
-
-                $imagePath = $image->storeAs('product_images', $imageName);
-
-                $imageProductPath = Storage::url($imagePath);
-            }
-
-
-            $mitraId = $profileImage->mitra_id;
-            $mitra = Mitra::find($mitraId);
-            if (!$mitra) {
-                return response()->json(['message' => 'Mitra not found'], 404);
-            }
-
-            $imagePath = $request->file('image_barang')->store('public/images');
-            $barang = new Barang();
-            $barang->nama_barang = $validatedData['nama_barang'];
-            $barang->deskripsi = $validatedData['deskripsi'];
-            $barang->harga = $validatedData['harga'];
-            $barang->rating_barang = $validatedData['rating_barang'] ?? 0.0;
-            $barang->category_id = $validatedData['category_id'];
-            $barang->image_barang = $imageProductPath;
-            $barang->mitra_id = $mitraId;
-            $barang->status_post = $validatedData->status_post ?? 'pending';
-            $barang->save();
-
-            // Retrieve the category
-            $category = Category::find($validatedData['category_id']);
-            if (!$category) {
-                return response()->json(['message' => 'Category not found'], 404);
-            }
-
-            $categoryName = $category->name;
-
-            $categoryType = $validatedData['category_id'] == 1 ? 'product' : 'jasa';
-            $mitra->{"jumlah_$categoryType"} += 1;
-            $mitra->save();
-
-            $mitraData = [
-                'id' => $mitra->id,
-                'name' => $mitra->nama_lengkap,
-                'jumlah_product' => $mitra->jumlah_product,
-                'jumlah_jasa' => $mitra->jumlah_jasa,
-                'pengikut' =>$mitra->pengikut,
-                'penilaian' => $mitra->penilaian,
-            ];
-
-
-
-            return response()->json([
-                'message' => 'Produk berhasil ditambahkan',
-                'product' => $barang,
-                'mitra' => $mitraData,
-                'category_name' => $categoryName,
-            ], 201);
-        }
-
-    public function editBarang(Request $request, $id)
     {
+        $validatedData = $request->validate([
+            'nama_barang' => 'required|string|max:255',
+            'deskripsi' => 'required|string',
+            'harga' => 'required|integer',
+            'rating_barang' => 'numeric|nullable',
+            'category_id' => 'required|in:1,2',
+            'image_barang' => 'required|image',
+        ]);
+
         $user = Auth::user();
         if (!$user) {
             return response()->json(['message' => 'Unauthenticated'], 401);
         }
+
+        $profileImage = $user->profileImages()->first();
+        if (!$profileImage) {
+            return response()->json(['message' => 'Profile image not found'], 404);
+        }
+
+        if ($request->hasFile('image_barang')) {
+            $image = $request->file('image_barang');
+            $mitraId = $profileImage->mitra_id;
+            $imageName = $mitraId . '_' . time() . '_' . $image->getClientOriginalName();
+            $imagePath = $image->storeAs('public/product_images', $imageName);
+
+            $imageProductPath = '/api/storage/' . $imagePath;
+        } else {
+            return response()->json(['message' => 'Image upload failed'], 400);
+        }
+
+        $mitra = Mitra::find($mitraId);
+        if (!$mitra) {
+            return response()->json(['message' => 'Mitra not found'], 404);
+        }
+
+        $barang = new Barang();
+        $barang->nama_barang = $validatedData['nama_barang'];
+        $barang->deskripsi = $validatedData['deskripsi'];
+        $barang->harga = $validatedData['harga'];
+        $barang->rating_barang = $validatedData['rating_barang'] ?? 0.0;
+        $barang->category_id = $validatedData['category_id'];
+        $barang->image_barang = $imageProductPath;
+        $barang->mitra_id = $mitraId;
+        $barang->status_post = $validatedData['status_post'] ?? 'pending';
+        $barang->save();
+
+        $category = Category::find($validatedData['category_id']);
+        if (!$category) {
+            return response()->json(['message' => 'Category not found'], 404);
+        }
+
+        $categoryName = $category->name;
+        $categoryType = $validatedData['category_id'] == 1 ? 'jumlah_product' : 'jumlah_jasa';
+        $mitra->$categoryType += 1;
+        $mitra->save();
+
+        $mitraData = [
+            'id' => $mitra->id,
+            'name' => $mitra->nama_lengkap,
+            'jumlah_product' => $mitra->jumlah_product,
+            'jumlah_jasa' => $mitra->jumlah_jasa,
+            'pengikut' => $mitra->pengikut,
+            'penilaian' => $mitra->penilaian,
+        ];
+
+        return response()->json([
+            'message' => 'Produk berhasil ditambahkan',
+            'product' => $barang,
+            'mitra' => $mitraData,
+            'category_name' => $categoryName,
+        ], 201);
+    }
+
+    public function editBarang(Request $request, $id)
+    {
+
+        // Validate incoming data
+        $validatedData = $request->validate([
+            'nama_barang' => 'nullable|string|max:255',
+            'deskripsi' => 'nullable|string',
+            'harga' => 'nullable|integer',
+            'rating_barang' => 'nullable|numeric',
+            'category_id' => 'nullable|in:1,2',
+            'image_barang' => 'nullable|image',
+        ]);
+
 
         $barang = Barang::find($id);
         if (!$barang) {
             return response()->json(['message' => 'Barang tidak ditemukan'], 404);
         }
 
-        $validatedData = $request->validate([
-            'nama_barang' => 'sometimes|string|max:255',
-            'deskripsi' => 'sometimes|string',
-            'harga' => 'sometimes|integer',
-            'rating_barang' => 'sometimes|numeric',
-            'category_id' => 'sometimes|in:1,2',
-            'image_barang' => 'sometimes|image',
-        ]);
+        // Update the Barang record with new values
+        $barang->fill($validatedData);
 
-        if (isset($validatedData['nama_barang'])) {
-            $barang->nama_barang = $validatedData['nama_barang'];
-        }
-
-        if (isset($validatedData['deskripsi'])) {
-            $barang->deskripsi = $validatedData['deskripsi'];
-        }
-
-        if (isset($validatedData['harga'])) {
-            $barang->harga = $validatedData['harga'];
-        }
-
-        if (isset($validatedData['rating_barang'])) {
-            $barang->rating_barang = $validatedData['rating_barang'];
-        }
-
-        if (isset($validatedData['category_id'])) {
-            $barang->category_id = $validatedData['category_id'];
-        }
-
-        // Jika ada image_barang, simpan file dan perbarui path-nya di database
-        if (isset($validatedData['image_barang'])) {
-            $imagePath = $request->file('image_barang')->store('images');
-            $barang->image_barang = $imagePath;
+        // Handle image upload if a new image is provided
+        if ($request->hasFile('image_barang')) {
+            $image = $request->file('image_barang');
+            $imageName = $image->getClientOriginalName();
+            $mitraId = $barang->mitra_id;
+            $imagePath = "product_images/{$mitraId}_{$imageName}";
+            $imagePath = $image->storeAs('product_images', $imageName);
+            $imageProductPath = Storage::url($imagePath);
+            $barang->image_barang = $imageProductPath;
         }
 
         $barang->save();
 
+        $category = $barang->category;
+        $mitra = $barang->mitra;
+
+        $categoryName = $category ? $category->name : 'Category not found';
+        $mitraData = [
+            'id' => $mitra->id,
+            'name' => $mitra->nama_lengkap,
+            'nama_toko' => $mitra->nama_toko,
+            'jumlah_product' => $mitra->jumlah_product,
+            'jumlah_jasa' => $mitra->jumlah_jasa,
+            'pengikut' => $mitra->pengikut,
+            'penilaian' => $mitra->penilaian,
+        ];
+
         return response()->json([
-            'message' => 'Barang berhasil diupdate',
-            'barang' => $barang,
+            'message' => 'Produk berhasil diperbarui',
+            'product' => $barang,
+            'mitra' => $mitraData,
+            'category_name' => $categoryName,
         ], 200);
     }
 

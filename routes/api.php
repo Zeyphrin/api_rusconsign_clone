@@ -51,12 +51,13 @@ Route::group([
 
 
     Route::get('allprofile', [ProfileController::class, 'allprofile']);
+    Route::get('mitra/{id}', [ProfileController::class, 'allprofilebymitra']);
     Route::post('edit-profile', [ProfileController::class, 'editProfile']);
 
     // Like routes
-    Route::get('likes', [LikeController::class, 'index']); // Get all liked items for the authenticated user
-    Route::post('likes', [LikeController::class, 'favorite']); // Favorite a product
-    Route::delete('likes/{barang_id}', [LikeController::class, 'unfavorite']); // Unfavorite a product
+    Route::get('likes', [LikeController::class, 'index']);
+    Route::post('likes', [LikeController::class, 'favorite']);
+    Route::delete('likes/{barang_id}', [LikeController::class, 'unfavorite']);
 
     Route::post('/mitra/add-barang', [\App\Http\Controllers\BarangController::class, 'addBarang']);
     Route::put('/mitra/edit-barang/{id}', [\App\Http\Controllers\BarangController::class, 'editBarang']);
@@ -84,8 +85,10 @@ Route::get('/barang/filter', [BarangController::class, 'filterProductsByCategory
 
 Route::get("index",[AuthController::class,"index"]);
 
+
  // Routes for AuthmitraController
 
+Route::post('add-lokasi', [\App\Http\Controllers\LokasiController::class, 'lokasi']);
 
 Route::put('accept/{id}', [AuthmitraController::class, 'accept']);
 Route::get("mitra/show/{id}", [AuthmitraController::class, "show"])->middleware('auth:sanctum');

@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('password');
             $table->text('bio_desc')->nullable()->default(null);
             $table->foreignId('mitra_id')->nullable()->default(0);
+            $table->string('status_pembayaran')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

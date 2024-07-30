@@ -27,6 +27,7 @@
                 $table->integer("jumlah_product")->default(0);
                 $table->float("penilaian")->default(0);
                 $table->string("email")->nullable();
+                $table->string("status_pembayaran")->nullable();
                 $table->rememberToken();
                 $table->timestamps();
             });

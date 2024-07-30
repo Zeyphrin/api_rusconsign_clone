@@ -111,13 +111,6 @@ class AuthController extends Controller
         ]);
     }
 
-    public function datauser()
-    {
-        return view('/user', [
-            "title" => "user",
-        ]);
-    }
-
     public function destroy(Request $request, $id)
     {
         $user = User::find($id);

@@ -6,6 +6,7 @@ use App\Models\Barang;
 use App\Models\Payment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Xendit\Configuration;
 use Xendit\Invoice\CreateInvoiceRequest;
 use Xendit\Invoice\Invoice;
@@ -28,33 +29,51 @@ class PaymentController extends Controller
                 'quantity' => 'required|integer|min:1',
             ]);
 
-            $barang = Barang::find($validatedData['barang_id']);
+            // Retrieve the authenticated user and the requested barang
+            $barang = Barang::findOrFail($validatedData['barang_id']);
             $user = Auth::user();
+
+            // Calculate the total amount
             $totalAmount = $barang->harga * $validatedData['quantity'];
-            $no_transaction = 'Inv - ' . rand();
+            $no_transaction = 'Inv-' . uniqid();
 
-            $order = new Payment();
-            $order->no_transaction = $no_transaction;
-            $order->external_id = $no_transaction;
-            $order->item_name = $barang->name;
-            $order->quantity = $validatedData['quantity'];
-            $order->harga = $barang->harga;
-            $order->grand_total = $totalAmount;
-            $order->save();
-
-            $createdInvoice = new CreateInvoiceRequest([
+            // Create an invoice request
+            $createdInvoice = [
                 'external_id' => $no_transaction,
                 'amount' => $totalAmount,
                 'payer_email' => $user->email,
                 'description' => 'Invoice for user ' . $user->name,
-            ]);
+            ];
 
+            // Generate the invoice using the API instance
             $apiInstance = new InvoiceApi();
             $generateInvoice = $apiInstance->createInvoice($createdInvoice);
 
-            return dd($generateInvoice);
-        } catch (\Throwable $th) {
-            throw $th;
+            // Check if the response has the necessary property
+            if (!isset($generateInvoice['invoice_url'])) {
+                throw new \Exception('Invoice URL not found in the response');
+            }
+
+            // Save the payment order to the database
+            $order = new Payment([
+                'barang_id' => $validatedData['barang_id'],
+                'user_id' => $user->id,
+                'no_transaction' => $no_transaction,
+                'external_id' => $no_transaction,
+                'name_barang' => $barang->nama_barang,
+                'quantity' => $validatedData['quantity'],
+                'harga_barang' => $barang->harga,
+                'grand_total' => $totalAmount,
+                'invoice_url' => $generateInvoice['invoice_url'],
+                'status' => 'pending',
+            ]);
+            $order->save();
+
+            return response()->json($generateInvoice, 201);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
         }
     }
+
 }
+

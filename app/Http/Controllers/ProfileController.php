@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Jasa;
+use App\Models\Mitra;
 use App\Models\Product;
 use App\Models\ProfileImage;
 use App\Models\User;
@@ -29,7 +30,7 @@ class ProfileController extends Controller
                 'created_at' => $user->created_at,
                 'updated_at' => $user->updated_at,
                 'id_mitra' => $user->profileImages->first()->mitra->id ?? null,
-                'image_profile'=>$user->profileImages->first()->mitra->image_profile ?? null,
+                'image_profile' => $user->profileImages->first()->mitra->image_profile ?? null,
                 'nama' => $user->profileImages->first()->mitra->nama_lengkap ?? null,
                 'nama_toko' => $user->profileImages->first()->mitra->nama_toko ?? null,
                 'nis' => $user->profileImages->first()->mitra->nis ?? null,
@@ -55,6 +56,7 @@ class ProfileController extends Controller
         ], 401);
     }
 
+
     public function editProfile(Request $request)
     {
         $user = Auth::user();
@@ -66,6 +68,7 @@ class ProfileController extends Controller
             'name' => 'sometimes|string|max:255',
             'bio_desc' => 'sometimes|string',
             'image_profile' => 'sometimes|image',
+            'nama_toko' => 'sometimes|string|max:255'
         ]);
 
         if (isset($validatedData['name'])) {
@@ -78,12 +81,16 @@ class ProfileController extends Controller
             $imagePath = $request->file('image_profile')->store('public/images');
             $user->image_profile = basename($imagePath);
         }
-        $user->save();
+        if (isset($validatedData['nama_toko'])) {
+            $user->profileImages->first()->mitra->nama_toko = $validatedData['nama_toko'];
+            $user->profileImages->first()->mitra->save();
+            $user->save();
 
-        return response()->json([
-            'message' => 'Profil berhasil diperbarui',
-            'user' => $user,
-        ], 200);
+            return response()->json([
+                'message' => 'Profil berhasil diperbarui',
+                'user' => $user,
+            ], 200);
+        }
     }
 }
 

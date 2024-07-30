@@ -10,10 +10,12 @@ class Payment extends Model
     use HasFactory;
     protected $fillable = [
         'barang_id',
-        'checkout_link',
+        'user_id',
         'external_id',
         'no_transaction',
         'quantity',
+        'invoice_url',
+        'grand_total',
         'status',
     ];
 
@@ -21,5 +23,10 @@ class Payment extends Model
     {
         return $this->belongsTo(Barang::class, 'barang_id');
     }
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
 
 }
