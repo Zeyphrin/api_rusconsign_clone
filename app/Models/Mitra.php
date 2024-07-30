@@ -11,7 +11,7 @@ class Mitra extends Model
 
     protected $primaryKey = 'id';
 
-    protected $fillable = ['image_profile', 'nama', 'nama_toko', 'nis', 'nomor', 'image', 'status', 'pengikut', 'email', 'jumlahproduct', 'jumlahjasa', 'penilaian'];
+    protected $fillable = ['image_profile', 'nama', 'nama_toko', 'nis', 'nomor', 'image', 'status', 'pengikut', 'email', 'jumlahproduct', 'jumlahjasa', 'penilaian', 'status_pembayaran'];
 
     public function user()
     {

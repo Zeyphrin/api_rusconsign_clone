@@ -39,10 +39,13 @@ Route::group([
     "middleware" => ["auth:sanctum"]
 ], function(){
 
-    Route::get("profile",[AuthController::class,"profile"]);
+    Route:: get("profile",[AuthController::class,"profile"]);
     Route::get("logout",[AuthController::class,"logout"]);
     Route::post('tambahpengikut', [ProfileController::class, 'tambahpengikut']);
     Route::get('/test',[ProductController::class,'test']);
+
+    Route::post('add-pembayaran-cod', [\App\Http\Controllers\CODController::class, 'store']);
+    Route::put('/cod/{id}/update-status',[\App\Http\Controllers\CODController::class, 'updateStatus']);
 
     Route::get('/cart', [CartController::class, 'index']);
     Route::post('/cart', [CartController::class, 'store']);
@@ -62,7 +65,7 @@ Route::group([
     Route::post('/mitra/add-barang', [\App\Http\Controllers\BarangController::class, 'addBarang']);
     Route::put('/mitra/edit-barang/{id}', [\App\Http\Controllers\BarangController::class, 'editBarang']);
     Route::delete('/mitra/delete-barang/{id}', [\App\Http\Controllers\BarangController::class, 'deleteBarang']);
-    Route::get('mitra/{mitra_id}', [BarangController::class, 'getBarangsByMitraId']);
+    Route::get('mitra/barang/{mitra_id}', [BarangController::class, 'getBarangsByMitraId']);
 
     Route::post('/create-invoice', [PaymentController::class, 'createInvoice']);
 }
@@ -89,6 +92,8 @@ Route::get("index",[AuthController::class,"index"]);
  // Routes for AuthmitraController
 
 Route::post('add-lokasi', [\App\Http\Controllers\LokasiController::class, 'lokasi']);
+
+
 
 Route::put('accept/{id}', [AuthmitraController::class, 'accept']);
 Route::get("mitra/show/{id}", [AuthmitraController::class, "show"])->middleware('auth:sanctum');

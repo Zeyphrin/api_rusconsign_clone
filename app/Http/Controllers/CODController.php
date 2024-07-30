@@ -18,8 +18,8 @@ class CODController extends Controller
     public function store(Request $request)
     {
         $validatedData = $request->validate([
-            'barang_id' => 'required|integer',
-            'lokasi_id' => 'required|inte  bger',
+            'barang_id' => 'required|exists:barangs,id',
+            'lokasi_id' => 'required|exists:lokasis,id',
             'quantity' => 'required|integer',
         ]);
 
@@ -35,6 +35,7 @@ class CODController extends Controller
             'quantity' => $validatedData['quantity'],
             'status_pembayaran' => 'belum_pembayaran',
             'grand_total' => $totalAmount,
+            'user_id' => $user->id,
         ]);
 
         return response()->json($cod, 201);
@@ -42,19 +43,26 @@ class CODController extends Controller
 
     public function updateStatus(Request $request, $id)
     {
+        // Validasi nilai status_pembayaran
         $validatedData = $request->validate([
             'status_pembayaran' => 'required|string|in:belum_pembayaran,progres',
         ]);
 
+        // Temukan Cod yang sesuai
         $cod = Cod::findOrFail($id);
 
+        // Update status_pembayaran
         $cod->status_pembayaran = $validatedData['status_pembayaran'];
         $cod->save();
 
+        // Update status pembayaran untuk user terkait
         $user = $cod->user;
-        $user->status_pembayaran = $validatedData['status_pembayaran'];
-        $user->save();
+        if ($user) {
+            $user->status_pembayaran = $validatedData['status_pembayaran'];
+            $user->save();
+        }
 
+        // Update status pembayaran untuk mitra terkait
         $mitra = $cod->lokasi->mitra;
         if ($mitra) {
             $mitra->status_pembayaran = $validatedData['status_pembayaran'];

@@ -26,6 +26,7 @@ class User extends Authenticatable
         'password',
         'bio_desc',
         'mitra_id',
+        'status_pembayaran'
     ];
 
     /**
