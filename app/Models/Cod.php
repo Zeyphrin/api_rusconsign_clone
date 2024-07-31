@@ -30,5 +30,8 @@ class Cod extends Model
         return $this->belongsTo(Lokasi::class);
     }
 
-
+    public function barang()
+    {
+        return $this->belongsTo(Barang::class);
+    }
 }

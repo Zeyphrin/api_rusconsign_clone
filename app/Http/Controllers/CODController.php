@@ -22,7 +22,7 @@ class CODController extends Controller
         $validatedData = $request->validate([
             'barang_id' => 'required|exists:barangs,id',
             'lokasi_id' => 'required|exists:lokasis,id',
-            'quantity' => 'required|integer',
+            ' ' => 'required|integer',
         ]);
 
         $barang = Barang::findOrFail($validatedData['barang_id']);
@@ -40,31 +40,31 @@ class CODController extends Controller
             'user_id' => $user->id,
         ]);
 
-        return response()->json($cod, 201);
+        return response()->json([
+            'message' => 'Pembayaran berhasil ditambahkan',
+            'cod'=> $cod,
+            'product' => $barang,
+            'lokasi' => $lokasi,
+        ], 201);
     }
 
     public function updateStatus(Request $request, $id)
     {
-        // Validasi nilai status_pembayaran
         $validatedData = $request->validate([
             'status_pembayaran' => 'required|string|in:belum_pembayaran,progres',
         ]);
 
-        // Temukan Cod yang sesuai
         $cod = Cod::findOrFail($id);
 
-        // Update status_pembayaran
         $cod->status_pembayaran = $validatedData['status_pembayaran'];
         $cod->save();
 
-        // Update status pembayaran untuk user terkait
         $user = $cod->user;
         if ($user) {
             $user->status_pembayaran = $validatedData['status_pembayaran'];
             $user->save();
         }
 
-        // Update status pembayaran untuk mitra terkait
         $mitra = $cod->lokasi->mitra;
         if ($mitra) {
             $mitra->status_pembayaran = $validatedData['status_pembayaran'];
@@ -78,7 +78,7 @@ class CODController extends Controller
     {
         $user = User::findOrFail($userId);
 
-        $cods = $user->cods()->with(['lokasi.mitra'])->get();
+        $cods = $user->cods()->with(['barang', 'lokasi.mitra'])->get();
 
         return response()->json([
             'user' => $user,
@@ -94,7 +94,7 @@ class CODController extends Controller
             return response()->json(['message' => 'Mitra not found'], 404);
         }
 
-        $cods = Cod::whereIn('lokasi_id', $mitra->lokasis->pluck('id'))->with('user')->get();
+        $cods = Cod::whereIn('lokasi_id', $mitra->lokasis->pluck('id'))->with(['barang', 'user'])->get();
 
         return response()->json([
             'mitra' => $mitra,
@@ -104,31 +104,25 @@ class CODController extends Controller
 
     public function updateStatusToCompleted(Request $request, $id)
     {
-        // Validasi nilai status_pembayaran
         $validatedData = $request->validate([
             'status_pembayaran' => 'required|string|in:selesai',
         ]);
 
-        // Temukan Cod yang sesuai
         $cod = Cod::findOrFail($id);
 
-        // Periksa apakah status saat ini adalah "progres" sebelum diperbarui ke "selesai"
         if ($cod->status_pembayaran !== 'progres') {
             return response()->json(['message' => 'Status pembayaran harus dalam progres sebelum diupdate ke selesai'], 400);
         }
 
-        // Update status_pembayaran
         $cod->status_pembayaran = $validatedData['status_pembayaran'];
         $cod->save();
 
-        // Update status pembayaran untuk user terkait
         $user = $cod->user;
         if ($user) {
             $user->status_pembayaran = $validatedData['status_pembayaran'];
             $user->save();
         }
 
-        // Update status pembayaran untuk mitra terkait
         $mitra = $cod->lokasi->mitra;
         if ($mitra) {
             $mitra->status_pembayaran = $validatedData['status_pembayaran'];
@@ -137,7 +131,5 @@ class CODController extends Controller
 
         return response()->json(['message' => 'Status pembayaran berhasil diperbarui menjadi selesai'], 200);
     }
-
-
 
 }
