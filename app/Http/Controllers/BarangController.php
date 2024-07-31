@@ -359,8 +359,8 @@ class BarangController extends Controller
             // Hapus gambar lama jika ada
             if ($barang->image_barang) {
                 $oldImagePath = str_replace('/storage/', '', $barang->image_barang);
-                if (Storage::exists($oldImagePath)) {
-                    Storage::delete($oldImagePath);
+                if (Storage::disk('public')->exists($oldImagePath)) {
+                    Storage::disk('public')->delete($oldImagePath);
                 }
             }
 
@@ -397,7 +397,6 @@ class BarangController extends Controller
             'category_name' => $categoryName,
         ], 200);
     }
-
 
 
     public function deleteBarang(Request $request, $id)
