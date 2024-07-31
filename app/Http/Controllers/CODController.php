@@ -22,7 +22,7 @@ class CODController extends Controller
         $validatedData = $request->validate([
             'barang_id' => 'required|exists:barangs,id',
             'lokasi_id' => 'required|exists:lokasis,id',
-            ' ' => 'required|integer',
+            'quantity' => 'required|integer',
         ]);
 
         $barang = Barang::findOrFail($validatedData['barang_id']);
@@ -44,7 +44,7 @@ class CODController extends Controller
             'message' => 'Pembayaran berhasil ditambahkan',
             'cod'=> $cod,
             'product' => $barang,
-            'lokasi' => $lokasi,
+            'lokasi' =>  $lokasi,
         ], 201);
     }
 
@@ -132,4 +132,28 @@ class CODController extends Controller
         return response()->json(['message' => 'Status pembayaran berhasil diperbarui menjadi selesai'], 200);
     }
 
+    public function getCodsByStatus($role, $status)
+    {
+        // Validasi role dan status pembayaran
+        if (!in_array($role, ['user', 'mitra'])) {
+            return response()->json(['message' => 'Role tidak valid'], 400);
+        }
+
+        if (!in_array($status, ['belum_pembayaran', 'progres', 'selesai'])) {
+            return response()->json(['message' => 'Status pembayaran tidak valid'], 400);
+        }
+
+        // Dapatkan data Cod berdasarkan role dan status pembayaran
+        if ($role === 'user') {
+            $cods = Cod::where('user_status_pembayaran', $status)->with(['barang', 'lokasi.mitra', 'user'])->get();
+        } else {
+            $cods = Cod::where('mitra_status_pembayaran', $status)->with(['barang', 'lokasi.mitra', 'user'])->get();
+        }
+
+        return response()->json([
+            'role' => $role,
+            'status' => $status,
+            'cods' => $cods,
+        ], 200);
+    }
 }

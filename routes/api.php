@@ -49,6 +49,7 @@ Route::group([
     Route::get('/user/{user_id}/cods', [\App\Http\Controllers\CODController::class, 'getUserCods']);
     Route::get('/mitra/{mitra_id}/cods', [\App\Http\Controllers\CODController::class, 'getMitraCods']);
     Route::put('/cod/{id}/complete', [\App\Http\Controllers\CODController::class, 'updateStatusToCompleted']);
+    Route::get('/cods/status/{role}/{status}', [\App\Http\Controllers\CODController::class, 'getCodsByStatus']);
 
 
     Route::get('/cart', [CartController::class, 'index']);
