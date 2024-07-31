@@ -134,16 +134,14 @@ class CODController extends Controller
 
     public function getCodsByStatus($role, $status)
     {
-        // Validasi role dan status pembayaran
         if (!in_array($role, ['user', 'mitra'])) {
             return response()->json(['message' => 'Role tidak valid'], 400);
         }
 
-        if (!in_array($status, ['belum_pembayaran', 'progres', 'selesai'])) {
+        if (!in_array($status, ['pending', 'progres', 'selesai'])) {
             return response()->json(['message' => 'Status pembayaran tidak valid'], 400);
         }
 
-        // Dapatkan data Cod berdasarkan role dan status pembayaran
         if ($role === 'user') {
             $cods = Cod::where('user_status_pembayaran', $status)->with(['barang', 'lokasi.mitra', 'user'])->get();
         } else {
