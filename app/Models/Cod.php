@@ -18,6 +18,8 @@ class Cod extends Model
         'status_pembayaran',
         'grand_total',
         'user_id',
+        'user_status_pembayaran',
+        'mitra_status_pembayaran',
     ];
 
     public function user()

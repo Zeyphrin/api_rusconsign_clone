@@ -19,6 +19,8 @@ return new class extends Migration
             $table->integer('quantity');
             $table->string('status_pembayaran');
             $table->string('grand_total');
+            $table->string('user_status_pembayaran')->default('pending');
+            $table->string('mitra_status_pembayaran')->default('pending');
             $table->timestamps();
         });
     }
