@@ -361,6 +361,8 @@ class BarangController extends Controller
                 $oldImagePath = str_replace('/storage/', '', $barang->image_barang);
                 if (Storage::disk('public')->exists($oldImagePath)) {
                     Storage::disk('public')->delete($oldImagePath);
+                } else {
+                    Log::warning("Gambar lama tidak ditemukan: " . $oldImagePath);
                 }
             }
 
@@ -368,7 +370,12 @@ class BarangController extends Controller
             $image = $request->file('image_barang');
             $imageName = time() . '.' . $image->getClientOriginalExtension();
             $imagePath = $image->storeAs('product_images', $imageName, 'public');
-            $barang->image_barang = '/storage/' . $imagePath;
+            if ($imagePath) {
+                $barang->image_barang = '/storage/' . $imagePath;
+            } else {
+                Log::error("Gagal menyimpan gambar baru");
+                return response()->json(['message' => 'Gagal menyimpan gambar baru'], 500);
+            }
         }
 
         // Simpan perubahan ke database
@@ -397,6 +404,7 @@ class BarangController extends Controller
             'category_name' => $categoryName,
         ], 200);
     }
+
 
 
     public function deleteBarang(Request $request, $id)
