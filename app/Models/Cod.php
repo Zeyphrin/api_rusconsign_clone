@@ -29,4 +29,6 @@ class Cod extends Model
     {
         return $this->belongsTo(Lokasi::class);
     }
+
+
 }

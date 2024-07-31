@@ -335,44 +335,51 @@ class BarangController extends Controller
 
     public function editBarang(Request $request, $id)
     {
-
-        // Validate incoming data
+        // Validasi data yang masuk
         $validatedData = $request->validate([
             'nama_barang' => 'nullable|string|max:255',
             'deskripsi' => 'nullable|string',
             'harga' => 'nullable|integer',
             'rating_barang' => 'nullable|numeric',
             'category_id' => 'nullable|in:1,2',
-            'image_barang' => 'nullable|image',
+            'image_barang' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048', // Validasi gambar
         ]);
 
-
+        // Cari barang berdasarkan ID
         $barang = Barang::find($id);
         if (!$barang) {
             return response()->json(['message' => 'Barang tidak ditemukan'], 404);
         }
 
-        // Update the Barang record with new values
+        // Update data barang dengan nilai baru
         $barang->fill($validatedData);
 
-        // Handle image upload if a new image is provided
+        // Tangani upload gambar jika gambar baru disediakan
         if ($request->hasFile('image_barang')) {
+            // Hapus gambar lama jika ada
+            if ($barang->image_barang) {
+                $oldImagePath = str_replace('/storage/', '', $barang->image_barang);
+                if (Storage::exists($oldImagePath)) {
+                    Storage::delete($oldImagePath);
+                }
+            }
+
+            // Upload gambar baru
             $image = $request->file('image_barang');
-            $imageName = $image->getClientOriginalName();
-            $mitraId = $barang->mitra_id;
-            $imagePath = "product_images/{$mitraId}_{$imageName}";
-            $imagePath = $image->storeAs('product_images', $imageName);
-            $imageProductPath = Storage::url($imagePath);
-            $barang->image_barang = $imageProductPath;
+            $imageName = time() . '.' . $image->getClientOriginalExtension();
+            $imagePath = $image->storeAs('product_images', $imageName, 'public');
+            $barang->image_barang = '/storage/' . $imagePath;
         }
 
+        // Simpan perubahan ke database
         $barang->save();
 
+        // Ambil data kategori dan mitra
         $category = $barang->category;
         $mitra = $barang->mitra;
 
         $categoryName = $category ? $category->name : 'Category not found';
-        $mitraData = [
+        $mitraData = $mitra ? [
             'id' => $mitra->id,
             'name' => $mitra->nama_lengkap,
             'nama_toko' => $mitra->nama_toko,
@@ -380,8 +387,9 @@ class BarangController extends Controller
             'jumlah_jasa' => $mitra->jumlah_jasa,
             'pengikut' => $mitra->pengikut,
             'penilaian' => $mitra->penilaian,
-        ];
+        ] : null;
 
+        // Kembalikan respons JSON
         return response()->json([
             'message' => 'Produk berhasil diperbarui',
             'product' => $barang,
@@ -389,6 +397,7 @@ class BarangController extends Controller
             'category_name' => $categoryName,
         ], 200);
     }
+
 
 
     public function deleteBarang(Request $request, $id)

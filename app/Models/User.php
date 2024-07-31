@@ -63,6 +63,10 @@ class User extends Authenticatable
         return $this->hasMany(ProfileImage::class, 'user_id', 'id');
     }
 
+    public function cods()
+    {
+        return $this->hasMany(Cod::class);
+    }
 
 
 

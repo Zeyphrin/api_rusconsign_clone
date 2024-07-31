@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('nama_lokasi');
             $table->text('desc_lokasi');
             $table->string('gambar_lokasi');
+            $table->foreignId('mitra_id');
             $table->timestamps();
         });
     }

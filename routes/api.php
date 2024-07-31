@@ -46,6 +46,10 @@ Route::group([
 
     Route::post('add-pembayaran-cod', [\App\Http\Controllers\CODController::class, 'store']);
     Route::put('/cod/{id}/update-status',[\App\Http\Controllers\CODController::class, 'updateStatus']);
+    Route::get('/user/{user_id}/cods', [\App\Http\Controllers\CODController::class, 'getUserCods']);
+    Route::get('/mitra/{mitra_id}/cods', [\App\Http\Controllers\CODController::class, 'getMitraCods']);
+    Route::put('/cod/{id}/complete', [\App\Http\Controllers\CODController::class, 'updateStatusToCompleted']);
+
 
     Route::get('/cart', [CartController::class, 'index']);
     Route::post('/cart', [CartController::class, 'store']);
@@ -63,7 +67,7 @@ Route::group([
     Route::delete('likes/{barang_id}', [LikeController::class, 'unfavorite']);
 
     Route::post('/mitra/add-barang', [\App\Http\Controllers\BarangController::class, 'addBarang']);
-    Route::put('/mitra/edit-barang/{id}', [\App\Http\Controllers\BarangController::class, 'editBarang']);
+    Route::post('/mitra/edit-barang/{id}', [\App\Http\Controllers\BarangController::class, 'editBarang']);
     Route::delete('/mitra/delete-barang/{id}', [\App\Http\Controllers\BarangController::class, 'deleteBarang']);
     Route::get('mitra/barang/{mitra_id}', [BarangController::class, 'getBarangsByMitraId']);
 
