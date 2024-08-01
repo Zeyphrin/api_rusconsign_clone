@@ -76,6 +76,8 @@ Route::group([
 }
 );
 
+Route::get('cod',[\App\Http\Controllers\CODController::class,'index']);
+
 Route::get('/barang/{id}', [BarangController::class, 'show']);
 Route::put('publish/{id}', [BarangController::class, 'publish']);
 Route::put('unpublish/{id}', [BarangController::class, 'unpublish']);

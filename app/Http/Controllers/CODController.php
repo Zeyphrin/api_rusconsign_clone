@@ -14,7 +14,11 @@ class CODController extends Controller
 {
     public function index()
     {
+        $cods = Cod::with(['barang', 'lokasi.mitra', 'user'])->get();
 
+        return response()->json([
+            'cods' => $cods,
+        ], 200);
     }
 
     public function store(Request $request)
@@ -42,9 +46,9 @@ class CODController extends Controller
 
         return response()->json([
             'message' => 'Pembayaran berhasil ditambahkan',
-            'cod'=> $cod,
+            'cod' => $cod,
             'product' => $barang,
-            'lokasi' =>  $lokasi,
+            'lokasi' => $lokasi,
         ], 201);
     }
 
@@ -134,20 +138,28 @@ class CODController extends Controller
 
     public function getCodsByStatus($role, $status)
     {
+        // Validasi role yang diterima
         if (!in_array($role, ['user', 'mitra'])) {
             return response()->json(['message' => 'Role tidak valid'], 400);
         }
 
-        if (!in_array($status, ['pending', 'progres', 'selesai'])) {
+        // Validasi status yang diterima
+        if (!in_array($status, ['belum_pembayaran', 'progres', 'selesai'])) {
             return response()->json(['message' => 'Status pembayaran tidak valid'], 400);
         }
 
+        // Query berdasarkan role dan status
         if ($role === 'user') {
-            $cods = Cod::where('user_status_pembayaran', $status)->with(['barang', 'lokasi.mitra', 'user'])->get();
+            $cods = Cod::where('status_pembayaran', $status)  // Update to use 'status_pembayaran' instead of 'user_status_pembayaran'
+            ->with(['barang', 'lokasi.mitra', 'user'])
+                ->get();
         } else {
-            $cods = Cod::where('mitra_status_pembayaran', $status)->with(['barang', 'lokasi.mitra', 'user'])->get();
+            $cods = Cod::where('status_pembayaran', $status)  // Update to use 'status_pembayaran' instead of 'mitra_status_pembayaran'
+            ->with(['barang', 'lokasi.mitra', 'user'])
+                ->get();
         }
 
+        // Mengembalikan hasil query dalam bentuk JSON
         return response()->json([
             'role' => $role,
             'status' => $status,

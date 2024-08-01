@@ -335,7 +335,6 @@ class BarangController extends Controller
 
     public function editBarang(Request $request, $id)
     {
-        // Validasi data yang masuk
         $validatedData = $request->validate([
             'nama_barang' => 'nullable|string|max:255',
             'deskripsi' => 'nullable|string',
@@ -345,26 +344,20 @@ class BarangController extends Controller
             'image_barang' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048', // Validasi gambar
         ]);
 
-        // Cari barang berdasarkan ID
         $barang = Barang::find($id);
         if (!$barang) {
             return response()->json(['message' => 'Barang tidak ditemukan'], 404);
         }
 
-        // Update data barang dengan nilai baru
         $barang->fill($validatedData);
 
-        // Tangani upload gambar jika gambar baru disediakan
         if ($request->hasFile('image_barang')) {
-            // Hapus gambar lama jika ada
             if ($barang->image_barang) {
                 $oldImagePath = str_replace('/storage/', '', $barang->image_barang);
                 if (Storage::disk('public')->exists($oldImagePath)) {
                     Storage::disk('public')->delete($oldImagePath);
                 }
             }
-
-            // Upload gambar baru
             $image = $request->file('image_barang');
             $imageName = time() . '.' . $image->getClientOriginalExtension();
             $imagePath = $image->storeAs('product_images', $imageName, 'public');
@@ -397,8 +390,6 @@ class BarangController extends Controller
             'category_name' => $categoryName,
         ], 200);
     }
-
-
 
     public function deleteBarang(Request $request, $id)
     {

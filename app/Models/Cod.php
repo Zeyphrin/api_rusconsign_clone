@@ -22,18 +22,21 @@ class Cod extends Model
         'mitra_status_pembayaran',
     ];
 
-    public function user()
+
+    protected $table = 'cod';
+
+    public function barang()
     {
-        return $this->belongsTo(User::class,'user_id');
+        return $this->belongsTo(Barang::class, 'barang_id');
     }
 
     public function lokasi()
     {
-        return $this->belongsTo(Lokasi::class);
+        return $this->belongsTo(Lokasi::class, 'lokasi_id');
     }
 
-    public function barang()
+    public function user()
     {
-        return $this->belongsTo(Barang::class);
+        return $this->belongsTo(User::class, 'user_id');
     }
 }
