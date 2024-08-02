@@ -20,6 +20,7 @@ class Cod extends Model
         'user_id',
         'user_status_pembayaran',
         'mitra_status_pembayaran',
+        'mitra_id'
     ];
 
 

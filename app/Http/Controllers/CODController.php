@@ -27,6 +27,7 @@ class CODController extends Controller
             'barang_id' => 'required|exists:barangs,id',
             'lokasi_id' => 'required|exists:lokasis,id',
             'quantity' => 'required|integer',
+            'mitra_id' => 'required|exists:mitras,id', // Add this line if mitra_id is required
         ]);
 
         $barang = Barang::findOrFail($validatedData['barang_id']);
@@ -42,6 +43,7 @@ class CODController extends Controller
             'status_pembayaran' => 'belum_pembayaran',
             'grand_total' => $totalAmount,
             'user_id' => $user->id,
+            'mitra_id' => $validatedData['mitra_id'], // Pass the value for mitra_id
         ]);
 
         return response()->json([
