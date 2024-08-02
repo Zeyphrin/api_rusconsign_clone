@@ -51,6 +51,7 @@ class CODController extends Controller
             'cod' => $cod,
             'product' => $barang,
             'lokasi' => $lokasi,
+            'user'=> $user
         ], 201);
     }
 
