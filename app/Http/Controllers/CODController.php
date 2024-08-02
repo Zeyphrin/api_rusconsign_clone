@@ -136,30 +136,28 @@ class CODController extends Controller
         return response()->json(['message' => 'Status pembayaran berhasil diperbarui menjadi selesai'], 200);
     }
 
-    public function getCodsByStatus($role, $status)
+    public function getCodsByStatus($role, $status, $id)
     {
-        // Validasi role yang diterima
         if (!in_array($role, ['user', 'mitra'])) {
             return response()->json(['message' => 'Role tidak valid'], 400);
         }
 
-        // Validasi status yang diterima
         if (!in_array($status, ['belum_pembayaran', 'progres', 'selesai'])) {
             return response()->json(['message' => 'Status pembayaran tidak valid'], 400);
         }
 
-        // Query berdasarkan role dan status
         if ($role === 'user') {
-            $cods = Cod::where('status_pembayaran', $status)  // Update to use 'status_pembayaran' instead of 'user_status_pembayaran'
-            ->with(['barang', 'lokasi.mitra', 'user'])
+            $cods = Cod::where('status_pembayaran', $status)
+                ->where('user_id', $id)
+                ->with(['barang', 'lokasi.mitra', 'user'])
                 ->get();
         } else {
-            $cods = Cod::where('status_pembayaran', $status)  // Update to use 'status_pembayaran' instead of 'mitra_status_pembayaran'
-            ->with(['barang', 'lokasi.mitra', 'user'])
+            $cods = Cod::where('status_pembayaran', $status)
+                ->where('mitra_id', $id)
+                ->with(['barang', 'lokasi.mitra', 'user'])
                 ->get();
         }
 
-        // Mengembalikan hasil query dalam bentuk JSON
         return response()->json([
             'role' => $role,
             'status' => $status,

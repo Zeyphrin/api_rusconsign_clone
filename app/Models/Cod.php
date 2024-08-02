@@ -39,4 +39,10 @@ class Cod extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
-}
+
+    public function mitra()
+    {
+        return $this->belongsTo(Mitra::class, 'mitra_id');
+    }
+
+    }

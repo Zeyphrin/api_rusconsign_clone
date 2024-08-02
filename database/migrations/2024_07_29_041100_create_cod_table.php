@@ -13,9 +13,10 @@ return new class extends Migration
     {
         Schema::create('cod', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id');
-            $table->foreignId('barang_id');
-            $table->foreignId('lokasi_id');
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('mitra_id')->constrained('mitras')->onDelete('cascade');
+            $table->foreignId('barang_id')->constrained('barangs')->onDelete('cascade');
+            $table->foreignId('lokasi_id')->constrained('lokasis')->onDelete('cascade');
             $table->integer('quantity');
             $table->string('status_pembayaran');
             $table->string('grand_total');
