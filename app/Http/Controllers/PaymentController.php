@@ -75,21 +75,21 @@ class PaymentController extends Controller
         }
     }
 
-    public function notificationCallback(Request $request)
-    {
-        $getToken = $request->headers->get('x-callback-token');
-        $callbackToken = env('XENDIT_CALLBACK_TOKEN');
-
-        try{
-            return response()->json([
-                'status' => 'check token',
-                'massage' => 'check token from xendit',
-                'token' => $getToken,
-            ],Resposnse::HTTP_OK);
-        }catch (
-
-        )
-    }
+//    public function notificationCallback(Request $request)
+//    {
+//        $getToken = $request->headers->get('x-callback-token');
+//        $callbackToken = env('XENDIT_CALLBACK_TOKEN');
+//
+//        try{
+//            return response()->json([
+//                'status' => 'check token',
+//                'massage' => 'check token from xendit',
+//                'token' => $getToken,
+//            ],Resposnse::HTTP_OK);
+//        }catch (
+//
+//        )
+//    }
 
 }
 

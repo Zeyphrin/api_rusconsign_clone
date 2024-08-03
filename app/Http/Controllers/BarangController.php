@@ -271,6 +271,7 @@ class BarangController extends Controller
                 return response()->json(['message' => 'Profile image not found'], 404);
             }
 
+
             if ($request->hasFile('image_barang')) {
                 $image = $request->file('image_barang');
 
@@ -278,8 +279,10 @@ class BarangController extends Controller
                 $mitraId = $request->input('mitra_id');
                 $imagePath = "product_images/{$mitraId}_{$imageName}";
 
-                $imagePath = $image->storeAs('product_images', $imageName);
+                // Store the image in the 'public' disk (this will make it publicly accessible)
+                $imagePath = $image->storeAs('public/product_images', $imageName);
 
+                // Generate the public URL to the image
                 $imageProductPath = Storage::url($imagePath);
             }
 
@@ -351,17 +354,21 @@ class BarangController extends Controller
 
         $barang->fill($validatedData);
 
+
         if ($request->hasFile('image_barang')) {
+            // Hapus gambar lama jika ada
             if ($barang->image_barang) {
                 $oldImagePath = str_replace('/storage/', '', $barang->image_barang);
                 if (Storage::disk('public')->exists($oldImagePath)) {
                     Storage::disk('public')->delete($oldImagePath);
                 }
             }
+
+            // Simpan gambar baru
             $image = $request->file('image_barang');
             $imageName = time() . '.' . $image->getClientOriginalExtension();
             $imagePath = $image->storeAs('product_images', $imageName, 'public');
-            $barang->image_barang = Storage::url($imagePath);
+            $barang->image_barang = Storage::url($imagePath); // Menggunakan jalur yang konsisten
         }
 
         // Simpan perubahan ke database
@@ -390,6 +397,7 @@ class BarangController extends Controller
             'category_name' => $categoryName,
         ], 200);
     }
+
 
     public function deleteBarang(Request $request, $id)
     {
