@@ -79,18 +79,19 @@ class ProfileController extends Controller
         }
         if (isset($validatedData['image_profile'])) {
             $imagePath = $request->file('image_profile')->store('public/images');
-            $user->image_profile = basename($imagePath);
+            $user->profileImages->first()->mitra->image_profile = basename($imagePath);
         }
         if (isset($validatedData['nama_toko'])) {
             $user->profileImages->first()->mitra->nama_toko = $validatedData['nama_toko'];
-            $user->profileImages->first()->mitra->save();
-            $user->save();
-
-            return response()->json([
-                'message' => 'Profil berhasil diperbarui',
-                'user' => $user,
-            ], 200);
         }
+
+        $user->save();
+        $user->profileImages->first()->mitra->save();
+
+        return response()->json([
+            'message' => 'Profil berhasil diperbarui',
+            'user' => $user,
+        ], 200);
     }
 }
 
