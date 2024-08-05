@@ -36,7 +36,7 @@ class ProfileController extends Controller
                 'nama' => $user->profileImages->first()->mitra->nama_lengkap ?? null,
                 'nama_toko' => $user->profileImages->first()->mitra->nama_toko ?? null,
                 'nis' => $user->profileImages->first()->mitra->nis ?? null,
-                'nomor' => $user->profileImages->first()->mitra->nomor ?? null,
+                'nomor' => $user->profileImages->first()->mitra->no_dompet_digital ?? null,
                 'image' => $user->profileImages->first()->mitra->image_id_card ?? null,
                 'status' => $user->profileImages->first()->mitra->status ?? null,
                 'pengikut' => $user->profileImages->first()->mitra->pengikut ?? null,
