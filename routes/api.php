@@ -73,6 +73,10 @@ Route::group([
     Route::get('mitra/barang/{mitra_id}', [BarangController::class, 'getBarangsByMitraId']);
 
     Route::post('/create-invoice', [PaymentController::class, 'createInvoice']);
+
+    Route::post('/profiles/image', [ProfileController::class, 'postImageProfile']);
+    Route::post('/profile/image/{id}', [ProfileController::class, 'editImageProfile']);
+    Route::delete('/profiles/image/{id}', [ProfileController::class, 'destroyImageProfile']);
 }
 );
 
