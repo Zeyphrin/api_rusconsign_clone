@@ -102,7 +102,7 @@ class ProfileController extends Controller
                 ]);
             }
             // Optionally update user with the new image
-            $user->image_profile = $profileImage->image_profile; // Update this field
+            $user->image_profiles = $profileImage->image_profile; // Update this field
         }
 
         // Handle 'nama_toko' update
